@@ -13,5 +13,5 @@
 ;; (remove-hook 'window-setup-hook #'doom-init-theme-h)
 ;; (add-hook 'after-init-hook #'doom-init-theme-h 'append)
 
-(message "apply config-doom")
+(message "[config] Apply config-doom")
 (provide 'config-doom)

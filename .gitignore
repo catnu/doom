@@ -9,3 +9,7 @@
 
 # Undo-tree save-files
 *.~undo-tree
+
+# private config
+/.custom.el
+/.private.el
