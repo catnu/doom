@@ -25,7 +25,8 @@
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
        ;;ivy               ; a search engine for love and life
-       vertico           ; the search engine of the future
+       (vertico +childframe; the search engine of the future
+                +icons)
 
        :ui
        ;;deft              ; notational velocity for Emacs
@@ -189,6 +190,9 @@
        ;;irc               ; how neckbeards socialize
        ;;(rss +org)        ; emacs as an RSS reader
        ;;twitter           ; twitter client https://twitter.com/vnought
+
+       :ui
+       posframe           ; pop childframe
 
        :config
        ;;literate

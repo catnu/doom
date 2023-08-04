@@ -19,6 +19,11 @@
   (dolist (name subconfigs)
     (require (intern (format "config-%s" name)))))
 
+;; global replace
+;; (global-set-key [remap +default/find-in-notes] #'consult-notes)
+(global-set-key [remap isearch-forward] #'consult-line)         ; C-s
+(global-set-key (kbd "C-j") nil)                                ; prevent C-j
+
 ;; private default
 (setq-default custom-file (expand-file-name ".custom.el" doom-private-dir))
 (when (file-exists-p custom-file) (load custom-file))
