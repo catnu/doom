@@ -10,6 +10,12 @@
 # Undo-tree save-files
 *.~undo-tree
 
-# private config
+# Private config
 /.custom.el
 /.private.el
+
+# Local
+/.local/
+
+# Temp file
+flycheck_*

@@ -13,7 +13,8 @@
 ;; filename: configs/config-<name>.el
 ;; provide: (provide 'config-<name>)
 (let ((subconfigs
-       '("doom"             ; doom ui, doom font
+       '("doom"              ; doom ui, doom font
+         "borg"              ; secondary packages management, lib management
          "better-default")))
   (dolist (name subconfigs)
     (require (intern (format "config-%s" name)))))
