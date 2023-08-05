@@ -3,4 +3,4 @@
 (when (modulep! :completion vertico +childframe)
   (use-package! vertico-posframe
    :init
-   (setq vertico-posframe-font "Sarasa Term SC Nerd 16")))
+   (setq vertico-posframe-font "Mononoki Nerd Font Mono 18")))

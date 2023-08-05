@@ -14,11 +14,6 @@
       scroll-margin 2                             ; It's nice to maintain a little margin
       display-time-default-load-average nil)      ; I don't think I've ever found this useful
 
-(display-time-mode 1)                             ; Enable time in the mode-line
-
-(when (string-match-p "^Power Battery" (battery)) ; On laptops...
-  (display-battery-mode 1))                       ; it's nice to know how much power you have
-
 ;; (global-subword-mode 1)                           ; Iterate through CamelCase words
 
 ;; (setq evil-vsplit-window-right t
@@ -43,4 +38,5 @@
 ;;       "C-<right>"      #'+evil/window-move-right)
 
 (message "[config] Apply config-better-default")
+(when (file-exists-p custom-file) (load custom-file))
 (provide 'config-better-default)

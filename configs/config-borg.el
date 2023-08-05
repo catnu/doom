@@ -4,7 +4,7 @@
 (add-to-list 'load-path (expand-file-name "lib/borg" doom-user-dir))
 (require 'borg)
 
-;;(package-initialize)
+;; (package-initialize)
 (borg-initialize)
 
 (message "[config] Apply config-borg")

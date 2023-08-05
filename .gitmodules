@@ -7,12 +7,21 @@
 [submodule "compat"]
 	path = lib/compat
 	url = https://git.sr.ht/~pkal/compat
+[submodule "dash"]
+	path = lib/dash
+	url = https://github.com/magnars/dash.el
 [submodule "emacsql"]
 	path = lib/emacsql
 	url = git@github.com:skeeto/emacsql.git
+[submodule "emojify"]
+	path = lib/emojify
+	url = https://github.com/iqbalansari/emacs-emojify
 [submodule "epkg"]
 	path = lib/epkg
 	url = git@github.com:emacscollective/epkg.git
+[submodule "ht"]
+	path = lib/ht
+	url = https://github.com/Wilfred/ht.el
 [submodule "llama"]
 	path = lib/llama
 	url = https://git.sr.ht/~tarsius/llama
