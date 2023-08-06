@@ -15,7 +15,7 @@ bootstrap-epkg:
 	@git clone git@github.com:emacsmirror/epkgs.git $(LOCAL_DIR)/epkgs
 
 update:
-	@cd $(DRONES_DIR)/.. && sh ./bin/update-submodule.sh
+	@cd $(DRONES_DIR)/.. && sh ./etc/shell/update-submodule.sh
 
 init:
 	@git submodule update --init
