@@ -25,3 +25,12 @@
 [submodule "llama"]
 	path = lib/llama
 	url = https://git.sr.ht/~tarsius/llama
+[submodule "lsp-bridge-acm"]
+	path = lib/lsp-bridge-acm
+	recursive-byte-compile = true
+[submodule "lsp-bridge-core"]
+	path = lib/lsp-bridge-core
+	recursive-byte-compile = true
+[submodule "lsp-bridge"]
+	path = lib/lsp-bridge
+	url = https://github.com/manateelazycat/lsp-bridge

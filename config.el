@@ -16,6 +16,7 @@
        '("doom"              ; doom ui, doom font
          "borg"              ; secondary packages management, lib management
          "emojify"           ; native emojis in emacs
+         "lsp-bridge"
          "better-default")))
   (dolist (name subconfigs)
     (require (intern (format "config-%s" name)))))
