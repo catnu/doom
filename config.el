@@ -18,6 +18,7 @@
          "posframe"          ; pop childframe
          "borg"              ; secondary packages management, lib management
          "emojify"           ; native emojis in emacs
+         "web-dev"
          "lsp-bridge"
          "better-default")))
   (dolist (name subconfigs)
@@ -28,6 +29,18 @@
 (global-set-key [remap isearch-forward] #'consult-line)             ; C-s
 (global-set-key [remap list-buffers] #'consult-buffer-other-window) ; C-x C-b
 (global-set-key (kbd "C-j") nil)                                ; prevent C-j
+
+
+(map! :v "C-f" #'indent-for-tab-command ;; = evil-indent
+
+      (:leader
+       (:prefix ("\\" . "Quick")
+        :desc "Cleanup posframe cache" "c"  #'(lambda () (interactive)
+                                                (message "do vertico-posframe-cleanup")
+                                                (vertico-posframe-cleanup))
+        :desc "Prpjectile refresh cache" "p" #'projectile-invalidate-cache
+        :desc "Save all buffers" "s" #'(lambda () (interactive)
+                                         (message "save all buffers") (save-some-buffers 0)))))
 
 ;; (advice-add 'risky-local-variable-p :override #'ignore-risky-local-variable-p-1)
 ;; (defun ignore-risky-local-variable-p-1 (sym &optional _ignored)
