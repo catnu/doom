@@ -49,6 +49,16 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
 
+;; for config-lsp-bridge
+(package! markdown-mode)
+(package! yasnippet)
+
+;; for config-posframe
 (when (modulep! :completion vertico +childframe)
   (package! posframe)
   (package! vertico-posframe))
+
+;; for config-corfu
+(package! corfu)
+(package! kind-icon)
+(package! cape)

@@ -12,6 +12,7 @@
 ;; design: depend on seperated config file name conversation
 ;; filename: configs/config-<name>.el
 ;; provide: (provide 'config-<name>)
+;; packages: from doom/packages.el or doom/lib
 (let ((subconfigs
        '("doom"              ; doom ui, doom font
          "posframe"          ; pop childframe
