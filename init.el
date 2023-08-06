@@ -191,9 +191,6 @@
        ;;(rss +org)        ; emacs as an RSS reader
        ;;twitter           ; twitter client https://twitter.com/vnought
 
-       :ui
-       posframe           ; pop childframe
-
        :config
        ;;literate
        (default +bindings +smartparens))

@@ -14,6 +14,7 @@
 ;; provide: (provide 'config-<name>)
 (let ((subconfigs
        '("doom"              ; doom ui, doom font
+         "posframe"          ; pop childframe
          "borg"              ; secondary packages management, lib management
          "emojify"           ; native emojis in emacs
          "lsp-bridge"
