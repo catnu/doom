@@ -6,6 +6,7 @@
                          "Overpass"
                          "JuliaMono"
                          "IBM Plex Mono"
+                         "Fira Code"      ; for ligatures
                          ;; "Merriweather"
                          ;; "Alegreya"
                          ))
