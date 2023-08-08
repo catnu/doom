@@ -49,6 +49,9 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
 
+;; for config-windows
+(package! ace-window)
+
 ;; for config-lsp-bridge
 (package! markdown-mode)
 (package! yasnippet)

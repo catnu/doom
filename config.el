@@ -16,6 +16,7 @@
 (let ((subconfigs
        '("doom"              ; doom ui, doom font
          "posframe"          ; pop childframe
+         "windows"           ; tab and windows
          "rg"
          "borg"              ; secondary packages management, lib management
          "emojify"           ; native emojis in emacs
@@ -25,22 +26,6 @@
          "better-default")))
   (dolist (name subconfigs)
     (require (intern (format "config-%s" name)))))
-
-;; global replace
-;; (global-set-key [remap +default/find-in-notes] #'consult-notes)
-(global-set-key [remap isearch-forward] #'consult-line)             ; C-s
-(global-set-key [remap list-buffers] #'consult-buffer-other-window) ; C-x C-b
-(global-set-key (kbd "C-j") nil)                                ; prevent C-j
-
-(map! :v "C-f" #'indent-for-tab-command ;; = evil-indent
-
-      (:leader
-       (:prefix ("\\" . "Quick")
-        :desc "Cleanup posframe cache" "c"  #'(lambda () (interactive)
-                                                (message "do vertico-posframe-cleanup")
-                                                (vertico-posframe-cleanup))
-        :desc "Prpjectile refresh cache" "p" #'projectile-invalidate-cache
-        :desc "Save all buffers" "s" #'save-all-buffers)))
 
 (defun save-all-buffers ()
   "save buffers if there is modfiy remained"
@@ -55,6 +40,37 @@
                        (save-some-buffers 0)
                        (message "all buffers saved"))
       (message "no modified buffers"))))
+
+(add-hook 'doom-first-buffer-hook
+          (lambda ()
+            ;; sort tab on
+            ;; (sort-tab-turn-on)
+            ;; enable mode here
+            (+global-word-wrap-mode)
+            ;; show 80 charater boundary
+            (set-face-foreground 'fill-column-indicator "gray40")
+            (global-display-fill-column-indicator-mode)
+            ;; tracking
+            ;; (global-wakatime-mode)
+            ;; vimish fold mode
+            ;; (vimish-fold-global-mode 1)
+            ))
+
+;; global replace
+;; (global-set-key [remap +default/find-in-notes] #'consult-notes)
+(global-set-key [remap isearch-forward] #'consult-line)             ; C-s
+(global-set-key [remap list-buffers] #'consult-buffer-other-window) ; C-x C-b
+(global-set-key (kbd "C-j") nil)                                ; prevent C-j
+
+(map! :v "C-f" #'indent-for-tab-command ;; = evil-indent
+      (:leader
+       ;; my new prefix
+       (:prefix ("\\" . "Quick")
+        :desc "Cleanup posframe cache" "c"  #'(lambda () (interactive)
+                                                (message "do vertico-posframe-cleanup")
+                                                (vertico-posframe-cleanup))
+        :desc "Prpjectile refresh cache" "p" #'projectile-invalidate-cache
+        :desc "Save all buffers" "s" #'save-all-buffers)))
 
 ;; (advice-add 'risky-local-variable-p :override #'ignore-risky-local-variable-p-1)
 ;; (defun ignore-risky-local-variable-p-1 (sym &optional _ignored)
