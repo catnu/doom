@@ -17,10 +17,10 @@
        '("doom"              ; doom ui, doom font
          "posframe"          ; pop childframe
          "windows"           ; tab and windows
-         "rg"
          "borg"              ; secondary packages management, lib management
          "emojify"           ; native emojis in emacs
          "habitica"
+         "rg"
          "applescript"
          "web-dev"
          "lsp-bridge"
@@ -61,6 +61,7 @@
             ;; (global-wakatime-mode)
             ;; vimish fold mode
             ;; (vimish-fold-global-mode 1)
+            ;; fix evil-collection error
             ))
 
 ;; global replace

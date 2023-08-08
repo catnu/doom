@@ -7,12 +7,18 @@
 [submodule "closql"]
 	path = lib/closql
 	url = git@github.com:emacscollective/closql.git
+[submodule "color-rg"]
+	path = lib/color-rg
+	url = https://github.com/manateelazycat/color-rg
 [submodule "compat"]
 	path = lib/compat
 	url = https://git.sr.ht/~pkal/compat
 [submodule "dash"]
 	path = lib/dash
 	url = https://github.com/magnars/dash.el
+[submodule "emacs-habitica"]
+	path = lib/emacs-habitica
+	url = git@github.com:ingtshan/emacs-habitica.git
 [submodule "emacsql"]
 	path = lib/emacsql
 	url = git@github.com:skeeto/emacsql.git
@@ -22,6 +28,12 @@
 [submodule "epkg"]
 	path = lib/epkg
 	url = git@github.com:emacscollective/epkg.git
+[submodule "exec-path-from-shell"]
+	path = lib/exec-path-from-shell
+	url = https://github.com/purcell/exec-path-from-shell
+[submodule "find-file-in-project"]
+	path = lib/find-file-in-project
+	url = https://github.com/redguardtoo/find-file-in-project
 [submodule "ht"]
 	path = lib/ht
 	url = https://github.com/Wilfred/ht.el
@@ -37,9 +49,6 @@
 [submodule "lsp-bridge-core"]
 	path = lib/lsp-bridge-core
 	recursive-byte-compile = true
-[submodule "emacs-habitica"]
-	path = lib/emacs-habitica
-	url = git@github.com:ingtshan/emacs-habitica.git
 [submodule "org-habitica"]
 	path = lib/org-habitica
 	url = git@github.com:LewWadoo/org-habitica.git

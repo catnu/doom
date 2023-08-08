@@ -60,12 +60,27 @@
   (global-set-key [remap deadgrep-visit-result-other-window] #'config-rg-deadgrep-view-result-other-window)
   (global-set-key [remap deadgrep-visit-result] #'deadgrep-visit-result-other-window))
 
-(use-package! rg)
+(use-package rg)
+
+(use-package color-rg
+  :config
+  (add-hook 'color-rg-mode-hook 'evil-insert-state))
 
 (map! :desc "rig" :n "gO" #'config-rg-jump-backward-respect-deadgrep ; :n go view result
       :leader
-      :desc "ripgrep" :n "sr" #'config-rg-deadgrep-or-finish-editing
-      :desc "ripgrep" :n "sR" #'rg-menu)
+      :desc "ripgrep" "sR" #'rg-menu
+      "sr" nil)
+
+(map! :leader
+      :desc "directory special file" "fd" #'find-file-in-current-directory-by-selected
+      :desc "project special file" "sf" #'find-file-in-project-by-selected
+      (:prefix ("sr" . "ripgrep refactor")
+       :desc "symbol in current file" "f" #'color-rg-search-symbol-in-current-file
+       :desc "current directory all file" "d" #'color-rg-search-symbol
+       :desc "current directory special file" "D" #'color-rg-search-symbol-with-type
+       :desc "current project all file" "p" #'color-rg-search-project
+       :desc "current project special file" "P" #'color-rg-search-project-with-type
+       :desc "deadgrep" "r" #'config-rg-deadgrep-or-finish-editing))
 
 (message "[config] Apply config-rg")
 (provide 'config-rg)
