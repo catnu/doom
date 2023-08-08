@@ -1,7 +1,5 @@
 ;;; configs/config-emojify.el -*- lexical-binding: t; -*-
 
-(require 'config-borg)
-
 (add-hook 'doom-first-buffer-hook
           (lambda ()
             ;; set emoji font

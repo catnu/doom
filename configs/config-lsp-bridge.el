@@ -1,6 +1,5 @@
 ;;; configs/config-lsp-bridge.el -*- lexical-binding: t; -*-
 
-(require 'config-borg)
 (defvar config-lsp-bridge-follow-hooks
   '(c-mode-hook
     c++-mode-hook

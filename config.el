@@ -18,6 +18,7 @@
          "posframe"          ; pop childframe
          "borg"              ; secondary packages management, lib management
          "emojify"           ; native emojis in emacs
+         "applescript"
          "web-dev"
          "lsp-bridge"
          "better-default")))

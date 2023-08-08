@@ -34,3 +34,6 @@
 [submodule "lsp-bridge"]
 	path = lib/lsp-bridge
 	url = https://github.com/manateelazycat/lsp-bridge
+[submodule "applescript-mode"]
+	path = lib/applescript-mode
+	url = git@github.com:ingtshan/applescript-mode.git
