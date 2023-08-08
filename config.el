@@ -43,10 +43,11 @@
 
 (add-hook 'doom-first-buffer-hook
           (lambda ()
-            ;; sort tab on
-            ;; (sort-tab-turn-on)
+            ;; SPC tab 1~9 for workspace
+            ;; SPC 1~9 for tab
+            (sort-tab-turn-on) ;(require 'config-windows)
             ;; enable mode here
-            (+global-word-wrap-mode)
+            (+global-word-wrap-mode) ;need wrod-wrap moduole
             ;; show 80 charater boundary
             (set-face-foreground 'fill-column-indicator "gray40")
             (global-display-fill-column-indicator-mode)

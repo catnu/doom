@@ -51,6 +51,9 @@
 
 ;; for config-windows
 (package! ace-window)
+(package! sort-tab
+  :recipe (:host github
+           :repo "manateelazycat/sort-tab"))
 
 ;; for config-lsp-bridge
 (package! markdown-mode)
