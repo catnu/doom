@@ -16,6 +16,7 @@
 (let ((subconfigs
        '("doom"              ; doom ui, doom font
          "posframe"          ; pop childframe
+         "rg"
          "borg"              ; secondary packages management, lib management
          "emojify"           ; native emojis in emacs
          "applescript"

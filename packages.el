@@ -62,3 +62,7 @@
 (package! corfu)
 (package! kind-icon)
 (package! cape)
+
+;; for config-rg
+(package! rg)
+(package! deadgrep)
