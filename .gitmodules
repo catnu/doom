@@ -1,3 +1,6 @@
+[submodule "applescript-mode"]
+	path = lib/applescript-mode
+	url = git@github.com:ingtshan/applescript-mode.git
 [submodule "borg"]
 	path = lib/borg
 	url = git@github.com:emacscollective/borg.git
@@ -25,15 +28,18 @@
 [submodule "llama"]
 	path = lib/llama
 	url = https://git.sr.ht/~tarsius/llama
+[submodule "lsp-bridge"]
+	path = lib/lsp-bridge
+	url = https://github.com/manateelazycat/lsp-bridge
 [submodule "lsp-bridge-acm"]
 	path = lib/lsp-bridge-acm
 	recursive-byte-compile = true
 [submodule "lsp-bridge-core"]
 	path = lib/lsp-bridge-core
 	recursive-byte-compile = true
-[submodule "lsp-bridge"]
-	path = lib/lsp-bridge
-	url = https://github.com/manateelazycat/lsp-bridge
-[submodule "applescript-mode"]
-	path = lib/applescript-mode
-	url = git@github.com:ingtshan/applescript-mode.git
+[submodule "emacs-habitica"]
+	path = lib/emacs-habitica
+	url = git@github.com:ingtshan/emacs-habitica.git
+[submodule "org-habitica"]
+	path = lib/org-habitica
+	url = git@github.com:LewWadoo/org-habitica.git

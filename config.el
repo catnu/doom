@@ -20,12 +20,18 @@
          "rg"
          "borg"              ; secondary packages management, lib management
          "emojify"           ; native emojis in emacs
+         "habitica"
          "applescript"
          "web-dev"
          "lsp-bridge"
          "better-default")))
   (dolist (name subconfigs)
     (require (intern (format "config-%s" name)))))
+
+(use-package habitica)
+
+(add-to-list '+lookup-provider-url-alist
+             '("Emacs China" "https://emacs-china.org/search?expanded=true&q=%s"))
 
 (defun save-all-buffers ()
   "save buffers if there is modfiy remained"
@@ -65,6 +71,8 @@
 
 (map! :v "C-f" #'indent-for-tab-command ;; = evil-indent
       (:leader
+       "so" #'+lookup/online-select
+       "sO" #'+lookup/online
        ;; my new prefix
        (:prefix ("\\" . "Quick")
         :desc "Cleanup posframe cache" "c"  #'(lambda () (interactive)

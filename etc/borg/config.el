@@ -4,12 +4,23 @@
   (message "\n--- [init.el] ---\n")
   (message "skipp by etc/borg/config.el"))
 
+;; dependence from doom optionally
+;; (let ((repos '(;; for lsp-bridge
+;;                "yasnippet"
+;;                "markdown-mode"
+;;                ;; for org-gtd-habitica
+;;                "org-gtd"
+;;                ))
+;;       (straight-builded-dir
+;;        (expand-file-name
+;;         (format ".local/straight/build-%s" emacs-version)
+;;         user-emacs-directory)))
+;;   (dolist (repo repos)
+;;     (add-to-list 'load-path (format "%s/%s" straight-builded-dir repo))))
+
 ;; dependence from doom
-(let ((repos '("yasnippet"
-               "markdown-mode"))
-      (straight-builded-dir
+(let ((default-directory
        (expand-file-name
         (format ".local/straight/build-%s" emacs-version)
         user-emacs-directory)))
-  (dolist (repo repos)
-    (add-to-list 'load-path (format "%s/%s" straight-builded-dir repo))))
+  (normal-top-level-add-subdirs-to-load-path))

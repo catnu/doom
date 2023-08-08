@@ -9,6 +9,7 @@
     ;; org-mode-hook
     ruby-mode-hook
     vue-mode-hook
+    rjsx-mode-hook
     ))
 
 ;;; modify from https://github.com/kongds/.doom.d/blob/main/configs/init-lsp-bridge.el
