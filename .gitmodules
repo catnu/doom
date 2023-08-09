@@ -52,3 +52,6 @@
 [submodule "org-habitica"]
 	path = lib/org-habitica
 	url = git@github.com:LewWadoo/org-habitica.git
+[submodule "translate-shell"]
+	path = lib/translate-shell
+	url = git@github.com:xuchunyang/translate-shell.el.git

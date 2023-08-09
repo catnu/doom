@@ -17,11 +17,11 @@
        '("doom"              ; doom ui, doom font
          "posframe"          ; pop childframe
          "windows"           ; tab and windows
-         "lookup"
          "borg"              ; secondary packages management, lib management
          "emojify"           ; native emojis in emacs
-         "habitica"
+         "lookup"
          "rg"
+         "habitica"
          "applescript"
          "web-dev"
          "lsp-bridge"

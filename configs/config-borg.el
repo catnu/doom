@@ -7,5 +7,16 @@
 ;; (package-initialize)
 (borg-initialize)
 
+(defun config-borg/custom-assimilate (host repo)
+  "use borg install package"
+  (let* ((package-name (file-name-base
+                        (and (string-match "/\\(.+\\)$" repo)
+                             (match-string 1 repo))))
+         (url (format (pcase host
+                        ;; add support here
+                        ("github"  "git@github.com:%s.git")
+                        ) repo)))
+    (borg-assimilate package-name url)))
+
 (message "[config] Apply config-borg")
 (provide 'config-borg)

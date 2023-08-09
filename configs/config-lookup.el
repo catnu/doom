@@ -61,7 +61,32 @@ QUERY must be a string, and PROVIDER must be a key of
   (advice-remove '+lookup/online-select #'config-lookup/use-search-online))
 (advice-add '+lookup/online-select :before #'config-lookup/use-search-online)
 
+;; need https://github.com/soimort/translate-shell
+(use-package translate-shell)
+  ;; :config
+  ;; <https://translate.google.com> is blocked in China for no apparent
+  ;; reason. No one ever asked my option.
+  ;; for mac you need proxychains-ng installed
+  ;; (setq translate-shell-command "proxychains4 -q trans -t en+zh %s"
+  ;;       translate-shell-brief-command "proxychains4 -q trans -brief -t zh+en %s"))
+
+;; Dictionary
+(defun config-lookup/explanation-brief (word)
+  "Show the explanation of WORD in the echo area."
+  (interactive
+   (list (translate-shell--read-string)))
+  (let ((word-sym (intern word)))
+    (if (assq word-sym translate-shell-brief-cache)
+        (message (assoc-default word-sym translate-shell-brief-cache))
+      (let* ((output
+              (shell-command-to-string
+               (format translate-shell-brief-command (shell-quote-argument word))))
+             (result (replace-regexp-in-string "\n" "; " output)))
+        (message result)
+        (add-to-list 'translate-shell-brief-cache (cons word-sym result))))))
+
 (map! :leader
+      :desc "Translation" "st" #'config-lookup/explanation-brief
       :desc "Look up online (w/ prompt)" "so" #'+lookup/online-select
       "sO" nil)
 
