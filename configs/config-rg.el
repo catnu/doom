@@ -1,7 +1,5 @@
 ;;; configs/config-rg.el -*- lexical-binding: t; -*-
 
-(require 'cl)
-
 (defvar config-rg-deadgrep--last-buffer nil
   "Last buffer of deadgrep")
 
@@ -34,16 +32,16 @@
   :config
   ;; use completing-read instead of reading-from-minibuffer
   (fset 'original-read-from-minibuffer (symbol-function 'read-from-minibuffer))
+  (defun config-rg-completing-read-from-minibuffer (prompt &optional a b c history sym-name d)
+    "hack first read-from-minibuffer call to completing-read"
+    (fset 'read-from-minibuffer (symbol-function 'original-read-from-minibuffer)) ;prevent loop and reset to normal
+    (completing-read prompt (eval history) nil nil sym-name))
   (defun config-rg-deadgrep (search-term &optional directory)
     (interactive (list
-                  (flet ((read-from-minibuffer
-                          (prompt &optional a b c history sym-name d)
-                          (flet ((read-from-minibuffer ; prevent looping
-                                  (prompt &optional a b c history sym-name d)
-                                  (original-read-from-minibuffer
-                                   prompt a b c history sym-name d)))
-                                (completing-read prompt (eval history) nil nil sym-name))))
-                        (deadgrep--read-search-term))))
+                  (progn
+                    (fset 'read-from-minibuffer (symbol-function 'config-rg-completing-read-from-minibuffer))
+                    (deadgrep--read-search-term))))
+    (fset 'read-from-minibuffer (symbol-function 'original-read-from-minibuffer)) ;reset to normal
     (funcall-interactively #'deadgrep search-term directory))
 
   (defun config-rg-deadgrep-view-result-other-window ()
