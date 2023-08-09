@@ -73,8 +73,6 @@
 
 (map! :v "C-f" #'indent-for-tab-command ;; = evil-indent
       (:leader
-       "so" #'+lookup/online-select
-       "sO" #'+lookup/online
        ;; my new prefix
        (:prefix ("\\" . "Quick")
         :desc "Cleanup posframe cache" "c"  #'(lambda () (interactive)

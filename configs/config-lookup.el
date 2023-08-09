@@ -1,5 +1,9 @@
 ;;; configs/config-lookup.el -*- lexical-binding: t; -*-
 
+;;; more query
+(add-to-list '+lookup-provider-url-alist
+             '("Emacs China" "https://emacs-china.org/search?expanded=true&q=%s"))
+;;; add Dash action
 (add-to-list '+lookup-provider-url-alist
              '("Dash Docset" "dash://:docset:/%s"))
 (add-to-list '+lookup-provider-url-alist
@@ -11,6 +15,8 @@
       ((rx "dash://")
        (funcall-interactively #'dash-at-point))
       (_ (funcall +lookup-open-url-fn url))))
+
+(setq +lookup-open-url-fn 'config-lookup/url-action)
 
 (defun config-lookup/search-online (query provider)
   "Look up QUERY in the browser using PROVIDER.
@@ -51,12 +57,13 @@ QUERY must be a string, and PROVIDER must be a key of
 (defun config-lookup/use-search-online ()
   (fset '+lookup/online #'config-lookup/search-online)
   (message "use config-lookup/search-online")
+  (map! :leader :desc "Look up online" "sO" #'+lookup/online)
   (advice-remove '+lookup/online-select #'config-lookup/use-search-online))
 (advice-add '+lookup/online-select :before #'config-lookup/use-search-online)
 
-;; more query
-(add-to-list '+lookup-provider-url-alist
-             '("Emacs China" "https://emacs-china.org/search?expanded=true&q=%s"))
+(map! :leader
+      :desc "Look up online (w/ prompt)" "so" #'+lookup/online-select
+      "sO" nil)
 
 (message "[config] Apply config-lookup")
 (provide 'config-lookup)
