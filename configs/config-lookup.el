@@ -5,18 +5,21 @@
              '("Emacs China" "https://emacs-china.org/search?expanded=true&q=%s"))
 ;;; add Dash action
 (add-to-list '+lookup-provider-url-alist
-             '("Dash Docset" "dash://:docset:/%s"))
+             '("Dash Docset" "lookup://:docset:/%s"))
 (add-to-list '+lookup-provider-url-alist
-             '("Dash" "dash://%s"))
+             '("Dash" "lookup://:dash:/%s"))
+(add-to-list '+lookup-provider-url-alist
+             '("Google Translate" "lookup://:translate:/%s"))
+
 (defun config-lookup/url-action (url)
   (pcase url
-      ((rx "dash://:docset:/")
+      ((rx "lookup://:translate:/")
+       (call-interactively #'config-lookup/explanation-brief))
+      ((rx "lookup://:docset:/")
        (funcall-interactively #'dash-at-point-with-docset))
-      ((rx "dash://")
+      ((rx "lookup://:dash:/")
        (funcall-interactively #'dash-at-point))
       (_ (funcall +lookup-open-url-fn url))))
-
-(setq +lookup-open-url-fn 'config-lookup/url-action)
 
 (defun config-lookup/search-online (query provider)
   "Look up QUERY in the browser using PROVIDER.
@@ -39,7 +42,7 @@ QUERY must be a string, and PROVIDER must be a key of
         (cl-check-type backend (or string function))
         (cond ((stringp backend)
                (config-lookup/url-action
-                (if (string-match-p (rx "dash://") backend)
+                (if (string-match-p (rx "lookup://") backend)
                     backend
                   (format backend
                           (url-encode-url
@@ -71,22 +74,61 @@ QUERY must be a string, and PROVIDER must be a key of
   ;;       translate-shell-brief-command "proxychains4 -q trans -brief -t zh+en %s"))
 
 ;; Dictionary
-(defun config-lookup/explanation-brief (word)
+(defvar config-lookup/brief--buffer " *explanation-brief-buffer*")
+(defvar config-lookup/brief-buffer--show nil)
+
+(defun config-lookup/explanation-brief-pop ()
+  (when (posframe-workable-p)
+    (setq config-lookup/brief-buffer--show t)
+    (posframe-show config-lookup/brief--buffer
+                   ;; :poshandler 'posframe-poshandler-frame-top-right-corner
+                   :poshandler #'(lambda (_info) '(-25 . 25))
+                   ;; :background-color "green"
+                   :foreground-color "orange"
+                   :border-width 1
+                   :border-color "orange"
+                   :left-fringe 18
+                   :right-fringe 18)))
+
+(defun config-lookup/brief-buffer-pop-toggle () (interactive)
+       (cond (config-lookup/brief-buffer--show
+              (setq config-lookup/brief-buffer--show nil)
+              (posframe-hide config-lookup/brief--buffer))
+             (t (config-lookup/explanation-brief-pop))))
+
+(defun config-lookup/explanation-brief (&optional word)
   "Show the explanation of WORD in the echo area."
   (interactive
    (list (translate-shell--read-string)))
-  (let ((word-sym (intern word)))
-    (if (assq word-sym translate-shell-brief-cache)
-        (message (assoc-default word-sym translate-shell-brief-cache))
-      (let* ((output
-              (shell-command-to-string
-               (format translate-shell-brief-command (shell-quote-argument word))))
-             (result (replace-regexp-in-string "\n" "; " output)))
-        (message result)
-        (add-to-list 'translate-shell-brief-cache (cons word-sym result))))))
+  (message "google translating...")
+  (let* ((word-sym (intern word))
+         (result (if (assq word-sym translate-shell-brief-cache)
+                     (assoc-default word-sym translate-shell-brief-cache)
+                   (shell-command-to-string
+                    (format translate-shell-brief-command (shell-quote-argument word))))))
+    (message "google translated")
+    (with-current-buffer (get-buffer-create config-lookup/brief--buffer)
+      (erase-buffer)
+      (insert "\n")
+      (insert result)
+      (insert "\n"))
+    (config-lookup/explanation-brief-pop)))
+
+(defun config-lookup/brief-buffer-habitica-character ()
+  (interactive)
+  (if (or (not habitica-uid) (not habitica-token))
+      (call-interactively 'habitica-login))
+  (with-current-buffer (get-buffer-create config-lookup/brief--buffer)
+    (erase-buffer)
+    (insert "\n")
+    (habitica--parse-profile (assoc-default 'stats (habitica-api-get-profile)) nil)
+    (insert "\n"))
+  (config-lookup/explanation-brief-pop))
 
 (map! :leader
-      :desc "Translation" "st" #'config-lookup/explanation-brief
+      ;; :desc "Translation" "st" #'config-lookup/explanation-brief
+      :desc "Bref buffer Helper" "sh" #'config-lookup/brief-buffer-pop-toggle
+      :desc "Bref buffer Habitica" "sH" #'config-lookup/brief-buffer-habitica-character
       :desc "Look up online (w/ prompt)" "so" #'+lookup/online-select
       "sO" nil)
 
