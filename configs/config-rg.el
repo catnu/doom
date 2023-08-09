@@ -30,6 +30,7 @@
 
 (use-package! deadgrep
   :config
+  (add-hook 'deadgrep-mode-hook #'+word-wrap-mode)
   ;; use completing-read instead of reading-from-minibuffer
   (fset 'original-read-from-minibuffer (symbol-function 'read-from-minibuffer))
   (defun config-rg-completing-read-from-minibuffer (prompt &optional a b c history sym-name d)

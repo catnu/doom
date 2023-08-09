@@ -49,6 +49,9 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
 
+;; for config-lookup
+(package! dash-at-point)
+
 ;; for config-windows
 (package! ace-window)
 (package! sort-tab
