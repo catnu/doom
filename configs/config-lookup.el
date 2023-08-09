@@ -4,7 +4,7 @@
              '("Dash Docset" "dash://:docset:/%s"))
 (add-to-list '+lookup-provider-url-alist
              '("Dash" "dash://%s"))
-(defun config-lookup-url-action (url)
+(defun config-lookup/url-action (url)
   (pcase url
       ((rx "dash://:docset:/")
        (funcall-interactively #'dash-at-point-with-docset))
@@ -32,7 +32,7 @@ QUERY must be a string, and PROVIDER must be a key of
       (dolist (backend backends)
         (cl-check-type backend (or string function))
         (cond ((stringp backend)
-               (config-lookup-url-action
+               (config-lookup/url-action
                 (if (string-match-p (rx "dash://") backend)
                     backend
                   (format backend
@@ -48,16 +48,15 @@ QUERY must be a string, and PROVIDER must be a key of
                (throw 'done t)))))))
 
 ;; patch
-(defun config-rg/use-search-online ()
+(defun config-lookup/use-search-online ()
   (fset '+lookup/online #'config-lookup/search-online)
   (message "use config-lookup/search-online")
-  (advice-remove '+lookup/online-select #'config-rg/use-search-online))
-(advice-add '+lookup/online-select :before #'config-rg/use-search-online)
+  (advice-remove '+lookup/online-select #'config-lookup/use-search-online))
+(advice-add '+lookup/online-select :before #'config-lookup/use-search-online)
 
 ;; more query
 (add-to-list '+lookup-provider-url-alist
              '("Emacs China" "https://emacs-china.org/search?expanded=true&q=%s"))
-
 
 (message "[config] Apply config-lookup")
 (provide 'config-lookup)

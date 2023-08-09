@@ -1,6 +1,6 @@
 ;;; configs/config-lsp-bridge.el -*- lexical-binding: t; -*-
 
-(defvar config-lsp-bridge-follow-hooks
+(defvar config-lsp-bridge/follow-hooks
   '(c-mode-hook
     c++-mode-hook
     python-mode-hook
@@ -14,7 +14,7 @@
 
 ;;; modify from https://github.com/kongds/.doom.d/blob/main/configs/init-lsp-bridge.el
 
-(defun config-lsp-bridge-action-follow-hook ()
+(defun config-lsp-bridge/action-follow-hook ()
   (unless (or (string-match "\*org-src-fontification:" (buffer-name))
               (string-match "\*Org Src" (buffer-name))
               (string-match "\*temp" (buffer-name))
@@ -34,8 +34,8 @@
     (flycheck-mode -1)))
 
 ;; use lsp bridge for following modes
-(dolist (hook config-lsp-bridge-follow-hooks)
-  (add-hook hook #'config-lsp-bridge-action-follow-hook))
+(dolist (hook config-lsp-bridge/follow-hooks)
+  (add-hook hook #'config-lsp-bridge/action-follow-hook))
 
 ;; (add-hook 'tex-mode-hook #'(lambda()
 ;;                              (setq-local corfu-auto t)
