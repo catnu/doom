@@ -12,7 +12,10 @@
       password-cache-expiry nil                   ; I can trust my computers ... can't I?
       ;; scroll-preserve-screen-position 'always     ; Don't have `point' jump around
       scroll-margin 2                             ; It's nice to maintain a little margin
-      display-time-default-load-average nil)      ; I don't think I've ever found this useful
+      display-time-default-load-average nil       ; I don't think I've ever found this useful
+      mode-require-final-newline nil
+      require-final-newline nil)
+
 
 ;; (global-subword-mode 1)                           ; Iterate through CamelCase words
 
