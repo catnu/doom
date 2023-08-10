@@ -15,7 +15,6 @@
 ;; packages: from doom/packages.el or doom/lib
 (let ((subconfigs
        '("doom"              ; doom ui, doom font
-         "auto-save"         ; auto save with evil
          "posframe"          ; pop childframe
          "windows"           ; tab and windows
          "borg"              ; secondary packages management, lib management
@@ -64,6 +63,7 @@
             ;; vimish fold mode
             ;; (vimish-fold-global-mode 1)
             ;; fix evil-collection error
+            (require 'config-auto-save); auto save with evil
             ))
 
 ;; global replace
