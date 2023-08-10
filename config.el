@@ -15,6 +15,7 @@
 ;; packages: from doom/packages.el or doom/lib
 (let ((subconfigs
        '("doom"              ; doom ui, doom font
+         "auto-save"         ; auto save with evil
          "posframe"          ; pop childframe
          "windows"           ; tab and windows
          "borg"              ; secondary packages management, lib management
