@@ -1,9 +1,10 @@
 ;;; configs/config-auto-save.el -*- lexical-binding: t; -*-
 
-(setq auto-save-default t) ; Nobody likes to loose work, I certainly don't
-
 ;; auto save for evil
 (when (modulep! :editor evil)
+  ;; no need for config auto save
+  (setq auto-save-default nil) ; Nobody likes to loose work, I certainly don't
+  ;; for auto-save-mode not auto-save-visited-mode
 
   (evil-define-local-var config/auto-save--local-timer nil)
 
