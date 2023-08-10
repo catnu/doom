@@ -15,6 +15,12 @@
     '(fundamental-mode so-long-mode)
     "The mode list not ot enable auto save")
 
+  (defmacro config/with-suppressed-message (&rest body)
+    "Suppress new messages temporarily in the echo area and the `*Messages*' buffer while BODY is evaluated."
+    (declare (indent 0))
+    (let ((message-log-max nil))
+      `(with-temp-message (or (current-message) "") ,@body)))
+
   (defun config/auto-save--save-file-idle ()
     (let ((buffer (current-buffer)))
       (and
@@ -24,17 +30,17 @@
        ;; (not (memq (buffer-name buffer)
        ;;            config/auto-save--buffer-name-blacklist))
        (setq config/auto-save--local-timer
-             (run-with-idle-timer
+             (run-with-timer
               6 nil ; idle second, repeat nil
               #'config/auto-save--timer-run-save buffer)))))
 
   (defun config/auto-save--timer-run-save (buffer)
     (and (get-buffer buffer)
          (with-current-buffer buffer
-           ;; from idle save so set local timer to nil
+           ;; from auto save so set local timer to nil
            (setq config/auto-save--local-timer nil)
            (and (buffer-modified-p)
-                (save-buffer)))))
+                (config/with-suppressed-message (save-buffer))))))
 
   (defun config/auto-save--follow-evil-insert-to-normal ()
     "when form insert state call save-file-idle"
