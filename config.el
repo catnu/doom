@@ -63,6 +63,7 @@
             ;; vimish fold mode
             ;; (vimish-fold-global-mode 1)
             ;; fix evil-collection error
+            (require 'config-modeline)
             (require 'config-auto-save); auto save with evil
             ))
 
