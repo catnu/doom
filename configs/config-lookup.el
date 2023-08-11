@@ -16,7 +16,7 @@
 (add-to-list '+lookup-provider-url-alist
              '("Google Translate" "lookup://:translate:/%s"))
 ;; handle url
-(defun config-lookup/url-action (url)
+(defun ++lookup/url-action (url)
   (pcase url
     ((rx "lookup://:translate:/" (let query (0+ anything)))
      (funcall-interactively #'minibrief/shwo-translation
@@ -44,7 +44,7 @@
                         (concat "Dash search (Snipptes Only): ") thing))))
       (dash-at-point-run-search search "Snippets Only"))))
 
-(defun config-lookup/search-online (query provider)
+(defun ++lookup/search-online (query provider)
   "Look up QUERY in the browser using PROVIDER.
 When called interactively, prompt for a query and, when called for the first
 time, the provider from `+lookup-provider-url-alist'. In subsequent calls, reuse
@@ -64,7 +64,7 @@ QUERY must be a string, and PROVIDER must be a key of
       (dolist (backend backends)
         (cl-check-type backend (or string function))
         (cond ((stringp backend)
-               (config-lookup/url-action
+               (++lookup/url-action
                 (if (string-match-p (rx "lookup://") backend)
                     (format backend (or query ""))
                   (format backend
@@ -80,12 +80,12 @@ QUERY must be a string, and PROVIDER must be a key of
                (throw 'done t)))))))
 
 ;; patch
-(defun config-lookup/use-search-online ()
-  (fset '+lookup/online #'config-lookup/search-online)
-  (message "use config-lookup/search-online")
+(defun ++lookup/use-search-online ()
+  (fset '+lookup/online #'++lookup/search-online)
+  (message "use ++lookup/search-online")
   (map! :leader :desc "Look up online" "sO" #'+lookup/online)
-  (advice-remove '+lookup/online-select #'config-lookup/use-search-online))
-(advice-add '+lookup/online-select :before #'config-lookup/use-search-online)
+  (advice-remove '+lookup/online-select #'++lookup/use-search-online))
+(advice-add '+lookup/online-select :before #'++lookup/use-search-online)
 
 (map! :leader
       ;; :desc "Translation" "st" #'minibrief/shwo-translation

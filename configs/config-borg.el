@@ -7,7 +7,7 @@
 ;; (package-initialize)
 (borg-initialize)
 
-(defun config-borg/custom-assimilate (host repo)
+(defun ++borg/custom-assimilate (host repo)
   "use borg install package"
   (let* ((package-name (file-name-base
                         (and (string-match "/\\(.+\\)$" repo)
