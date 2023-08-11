@@ -35,8 +35,7 @@
 
 (defun ++minibrief/message-tail (&rest _args)
   ;; ;; (with-current-buffer "*Messages*" (goto-char (point-max)))
-  (let* ((windows (get-buffer-window-list "*Messages*" t t))
-         (window (and windows (car windows))))
+  (let ((window (get-buffer-window "*Messages*" t)))
     (and window (with-current-buffer (window-buffer window)
                   (set-window-point window (point-max))))))
 
