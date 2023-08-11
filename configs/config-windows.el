@@ -106,10 +106,12 @@
        :n "wF" #'balance-windows
        ;; selection/exchange/deletion aowedD
        :n "wa" #'ace-window
-       :n "wo" #'other-window
+       ;; :n "wo" #'other-window
        :n "we" #'evil-window-exchange
        :n "wd" #'ace-delete-other-windows
        :n "wD" #'ace-delete-window ))
+
+(global-set-key [remap other-window] #'ace-window)
 
 (message "[config] Apply config-windows")
 (provide 'config-windows)
