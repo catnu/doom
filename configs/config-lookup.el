@@ -7,19 +7,39 @@
 (add-to-list '+lookup-provider-url-alist
              '("Dash Docset" "lookup://:docset:/%s"))
 (add-to-list '+lookup-provider-url-alist
+             '("Dash Snippets" "lookup://:d-snippet:/%s"))
+(add-to-list '+lookup-provider-url-alist
              '("Dash" "lookup://:dash:/%s"))
 (add-to-list '+lookup-provider-url-alist
              '("Google Translate" "lookup://:translate:/%s"))
-
+;; handle url
 (defun config-lookup/url-action (url)
   (pcase url
-      ((rx "lookup://:translate:/")
-       (call-interactively #'config-lookup/explanation-brief))
-      ((rx "lookup://:docset:/")
-       (funcall-interactively #'dash-at-point-with-docset))
-      ((rx "lookup://:dash:/")
-       (funcall-interactively #'dash-at-point))
-      (_ (funcall +lookup-open-url-fn url))))
+    ((rx "lookup://:translate:/" (let query (0+ anything)))
+     (funcall-interactively #'config-lookup/explanation-brief
+                            (if (eq query "")
+                                (or (thing-at-point 'word)
+                                    (translate-shell--read-string))
+                              query)))
+    ((rx "lookup://:dash:/")
+     (call-interactively #'dash-at-point))
+    ((rx "lookup://:docset:/")
+     (funcall-interactively #'dash-at-point-with-docset))
+    ((rx "lookup://:d-snippet:/")
+     (funcall-interactively #'config/dash-at-point-only-snippets t))
+    (_ (funcall +lookup-open-url-fn url))))
+
+(use-package dash-at-point
+  :config
+  ;; (add-to-list 'dash-at-point-docsets "Snippets Only")
+  ;;;###autoload
+  (defun config/dash-at-point-only-snippets (&optional edit-search)
+    (interactive "P")
+    (let* ((thing (thing-at-point 'symbol))
+           (search (if (or edit-search (null thing))
+                       (read-from-minibuffer
+                        (concat "Dash search (Snipptes Only): ") thing))))
+      (dash-at-point-run-search search "Snippets Only"))))
 
 (defun config-lookup/search-online (query provider)
   "Look up QUERY in the browser using PROVIDER.
@@ -43,7 +63,7 @@ QUERY must be a string, and PROVIDER must be a key of
         (cond ((stringp backend)
                (config-lookup/url-action
                 (if (string-match-p (rx "lookup://") backend)
-                    backend
+                    (format backend (or query ""))
                   (format backend
                           (url-encode-url
                            (read-string (format "Search for (on %s): " provider)
@@ -111,10 +131,11 @@ QUERY must be a string, and PROVIDER must be a key of
      ((null config-lookup/brief--buffer-show)
       (config-lookup/brief-pop
        (if (string= "Habitica" (completing-read "Show Which: " '("Translation" "Habitica" )))
-           habitica-buf explanation-buf)))
+           habitica-buf
+         explanation-buf)))
      ((string= explanation-buf config-lookup/brief--buffer-show)
       (if (string= "Habitica" (completing-read "Show Which: " '("Close" "Habitica")))
-          (config-lookup/brief-pop explanation-buf)
+          (config-lookup/brief-pop habitica-buf)
         (config-lookup/brief-hide)))
      ((string= habitica-buf config-lookup/brief--buffer-show)
       (let ((select (completing-read "Show Which: " '("Close" "Translation" "Habitica Profile" ))))
@@ -179,8 +200,8 @@ QUERY must be a string, and PROVIDER must be a key of
 
 (map! :leader
       ;; :desc "Translation" "st" #'config-lookup/explanation-brief
-      :desc "Bref buffer Helper" "sh" #'config-lookup/brief-buffer-pop-toggle
-      :desc "Bref buffer Habitica" "sH" #'config-lookup/brief-buffer-habitica-character
+      :desc "Bref buffer Helper" "hh" #'config-lookup/brief-buffer-pop-toggle
+      :desc "Bref buffer Habitica" "hH" #'config-lookup/brief-buffer-habitica-character
       :desc "Look up online (w/ prompt)" "so" #'+lookup/online-select
       "sO" nil)
 
