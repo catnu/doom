@@ -29,14 +29,14 @@
     ((rx "lookup://:docset:/")
      (funcall-interactively #'dash-at-point-with-docset))
     ((rx "lookup://:d-snippet:/")
-     (funcall-interactively #'config/dash-at-point-only-snippets t))
+     (funcall-interactively #'++dash-at-point-only-snippets t))
     (_ (funcall +lookup-open-url-fn url))))
 
 (use-package dash-at-point
   :config
   ;; (add-to-list 'dash-at-point-docsets "Snippets Only")
   ;;;###autoload
-  (defun config/dash-at-point-only-snippets (&optional edit-search)
+  (defun ++dash-at-point-only-snippets (&optional edit-search)
     (interactive "P")
     (let* ((thing (thing-at-point 'symbol))
            (search (if (or edit-search (null thing))
