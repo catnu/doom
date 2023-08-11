@@ -6,92 +6,92 @@
   (setq auto-save-default nil) ; Nobody likes to loose work, I certainly don't
   ;; for auto-save-mode not auto-save-visited-mode
 
-  (evil-define-local-var config/auto-save--local-timer nil)
+  (evil-define-local-var ++auto-save/local-timer nil)
 
-  (defvar config/auto-save--buffer-name-blacklist
+  (defvar ++auto-save/buffer-name-blacklist
     '("COMMIT_EDITMSG")
     "The blacklist of buffers to auto save.")
 
-  (defvar config/auto-save--disabled-modes
+  (defvar ++auto-save/disabled-modes
     '(fundamental-mode so-long-mode)
     "The mode list not ot enable auto save")
 
-  (defmacro config/with-suppressed-message (&rest body)
+  (defmacro ++with-suppressed-message (&rest body)
     "Suppress new messages temporarily in the echo area and the `*Messages*' buffer while BODY is evaluated."
     (declare (indent 0))
     (let ((message-log-max nil))
       `(with-temp-message (or (current-message) "") ,@body)))
 
-  (defun config/auto-save--save-file-idle ()
+  (defun ++auto-save/save-file-idle ()
     (let ((buffer (current-buffer)))
       (and
-       (null config/auto-save--local-timer)
+       (null ++auto-save/local-timer)
        ;; (buffer-file-name buffer) ; only buffer is visted file
        (buffer-modified-p)
        ;; (not (memq (buffer-name buffer)
-       ;;            config/auto-save--buffer-name-blacklist))
-       (setq config/auto-save--local-timer
+       ;;            ++auto-save/buffer-name-blacklist))
+       (setq ++auto-save/local-timer
              (run-with-timer
               6 nil ; idle second, repeat nil
-              #'config/auto-save--timer-run-save buffer)))))
+              #'++auto-save/timer-run-save buffer)))))
 
-  (defun config/auto-save--timer-run-save (buffer)
+  (defun ++auto-save/timer-run-save (buffer)
     (and (get-buffer buffer)
          (with-current-buffer buffer
            ;; from auto save so set local timer to nil
-           (setq config/auto-save--local-timer nil)
+           (setq ++auto-save/local-timer nil)
            (and (buffer-modified-p)
-                (config/with-suppressed-message (save-buffer))))))
+                (++with-suppressed-message (save-buffer))))))
 
-  (defun config/auto-save--follow-evil-insert-to-normal ()
+  (defun ++auto-save/follow-evil-insert-to-normal ()
     "when form insert state call save-file-idle"
     (and (eq 'insert evil-previous-state)
          ;; (not (derived-mode-p 'special-mode))
-         (config/auto-save--save-file-idle)))
+         (++auto-save/save-file-idle)))
 
-  (defun config/auto-save--follow-after-change (_begin _end _length)
+  (defun ++auto-save/follow-after-change (_begin _end _length)
     "every change outside `insert, emacs state' launch auto save"
-    (or (memq evil-state '(insert emacs)) (config/auto-save--save-file-idle)))
+    (or (memq evil-state '(insert emacs)) (++auto-save/save-file-idle)))
 
-  (defun config/auto-save--cancel-timer-when-need ()
+  (defun ++auto-save/cancel-timer-when-need ()
     "break timer to stop next auto save file idle round"
-    (unless (null config/auto-save--local-timer)
-      (cancel-timer config/auto-save--local-timer)
-      (setq config/auto-save--local-timer nil)))
+    (unless (null ++auto-save/local-timer)
+      (cancel-timer ++auto-save/local-timer)
+      (setq ++auto-save/local-timer nil)))
 
-  (defun config/auto-save--global-enable-mode ()
+  (defun ++auto-save/global-enable-mode ()
     (or (derived-mode-p 'special-mode)
-        (memq major-mode config/auto-save--disabled-modes)
+        (memq major-mode ++auto-save/disabled-modes)
         (null (buffer-file-name (current-buffer))); only buffer is visted file
-        (memq (buffer-name (current-buffer)) config/auto-save--buffer-name-blacklist)
-        (config/auto-save-mode +1)))
+        (memq (buffer-name (current-buffer)) ++auto-save/buffer-name-blacklist)
+        (++auto-save-mode +1)))
 
-  (define-globalized-minor-mode config/global-auto-save-mode
-    config/auto-save-mode
-    config/auto-save--global-enable-mode)
+  (define-globalized-minor-mode ++global-auto-save-mode
+    ++auto-save-mode
+    ++auto-save/global-enable-mode)
 
-  (define-minor-mode config/auto-save-mode
+  (define-minor-mode ++auto-save-mode
     "A minor mode that separate inline automatically."
     :init-value nil
     :global nil
-    (if (not config/auto-save-mode)
+    (if (not ++auto-save-mode)
         ;;disable
         (progn
-          (remove-hook 'evil-normal-state-entry-hook #'config/auto-save--follow-evil-insert-to-normal t)
-          (remove-hook 'after-change-functions #'config/auto-save--follow-after-change t)
-          (remove-hook 'evil-insert-state-entry-hook #'config/auto-save--cancel-timer-when-need t)
-          (remove-hook 'before-save-hook #'config/auto-save--cancel-timer-when-need t)))
+          (remove-hook 'evil-normal-state-entry-hook #'++auto-save/follow-evil-insert-to-normal t)
+          (remove-hook 'after-change-functions #'++auto-save/follow-after-change t)
+          (remove-hook 'evil-insert-state-entry-hook #'++auto-save/cancel-timer-when-need t)
+          (remove-hook 'before-save-hook #'++auto-save/cancel-timer-when-need t)))
     ;; enable
     (progn
       ;; moment to start idle timer
-      (add-hook 'evil-normal-state-entry-hook #'config/auto-save--follow-evil-insert-to-normal nil t)
-      (add-hook 'after-change-functions #'config/auto-save--follow-after-change nil t)
+      (add-hook 'evil-normal-state-entry-hook #'++auto-save/follow-evil-insert-to-normal nil t)
+      (add-hook 'after-change-functions #'++auto-save/follow-after-change nil t)
       ;; moment to stop idle timer
-      (add-hook 'evil-insert-state-entry-hook #'config/auto-save--cancel-timer-when-need nil t)
-      (add-hook 'before-save-hook #'config/auto-save--cancel-timer-when-need nil t)))
+      (add-hook 'evil-insert-state-entry-hook #'++auto-save/cancel-timer-when-need nil t)
+      (add-hook 'before-save-hook #'++auto-save/cancel-timer-when-need nil t)))
 
   ;; enable auto save global
-  (config/global-auto-save-mode)
+  (++global-auto-save-mode)
   (message "[config] Apply config-auto-save"));; end of when
 
 (provide 'config-auto-save)
