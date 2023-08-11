@@ -1,19 +1,19 @@
 ;;; configs/config-minibrief.el -*- lexical-binding: t; -*-
 ;;; minibrief = posframe minibuffer at right top
 
-(defvar minibrief/name-list '("Habitica" "Translation" "*Messages*"))
-(defvar minibrief/show--name nil)
+(defvar ++minibrief/name-list '("Habitica" "Translation" "*Messages*"))
+(defvar ++minibrief/show--name nil)
 
-(defun minibrief/buffer-name (name)
+(defun ++minibrief/buffer-name (name)
   (if (string-match-p "^*" name) name (format " *Minibrief %s*" name)))
 
-(defun minibrief/options (&optional list)
-  (append (or list (remove minibrief/show--name minibrief/name-list)) '("Close")))
+(defun ++minibrief/options (&optional list)
+  (append (or list (remove ++minibrief/show--name ++minibrief/name-list)) '("Close")))
 
-(defun minibrief/show (brief-name &optional color height width)
-  (and minibrief/show--name (minibrief/hide minibrief/show--name))
-  (setq minibrief/show--name brief-name)
-  (posframe-show (minibrief/buffer-name brief-name)
+(defun ++minibrief/show (brief-name &optional color height width)
+  (and ++minibrief/show--name (++minibrief/hide ++minibrief/show--name))
+  (setq ++minibrief/show--name brief-name)
+  (posframe-show (++minibrief/buffer-name brief-name)
                  ;; :poshandler 'posframe-poshandler-frame-top-right-corner
                  :poshandler #'(lambda (_info) '(-25 . 25))
                  ;; :background-color "green"
@@ -27,42 +27,42 @@
                  :left-fringe 18
                  :right-fringe 18))
 
-(defun minibrief/hide (brief-name &optional delete)
+(defun ++minibrief/hide (brief-name &optional delete)
   ;; (when (string= brief-name "*Messages*")
-  ;;   (advice-remove 'message #'minibrief/message-tail)
+  ;;   (advice-remove 'message #'++minibrief/message-tail)
   ;;   (setq delete t))
-  (funcall (if delete #'posframe-delete #'posframe-hide) (minibrief/buffer-name brief-name)))
+  (funcall (if delete #'posframe-delete #'posframe-hide) (++minibrief/buffer-name brief-name)))
 
-(defun minibrief/message-tail (&rest _args)
+(defun ++minibrief/message-tail (&rest _args)
   ;; ;; (with-current-buffer "*Messages*" (goto-char (point-max)))
   (let* ((windows (get-buffer-window-list "*Messages*" t t))
          (window (and windows (car windows))))
     (and window (with-current-buffer (window-buffer window)
                   (set-window-point window (point-max))))))
 
-(defun minibrief/habitica-profile-button-pressed (_button)
+(defun ++minibrief/habitica-profile-button-pressed (_button)
   ;; (funcall +lookup-open-url-fn private/habitica-profile-url)
   (funcall +lookup-open-url-fn "https://habitica.com/"))
 
-(define-button-type 'minibrief/profile-button
-  'action 'minibrief/habitica-profile-button-pressed
+(define-button-type '++minibrief/profile-button
+  'action '++minibrief/habitica-profile-button-pressed
   'follow-link t
   'help-echo "Click Button"
   'help-args "test")
 
-(defun minibrief/show-habitica-character ()
+(defun ++minibrief/show-habitica-character ()
   (interactive)
   (if (or (not habitica-uid) (not habitica-token))
       (call-interactively 'habitica-login))
-  (let ((buf (minibrief/buffer-name "Habitica")))
+  (let ((buf (++minibrief/buffer-name "Habitica")))
     (with-current-buffer (get-buffer-create buf)
       (erase-buffer)
       (insert "\n")
       (habitica--parse-profile (assoc-default 'stats (habitica-api-get-profile)) nil)
       (insert "** Profile")
-      (make-button (- (point) 10) (point) :type 'minibrief/profile-button)
+      (make-button (- (point) 10) (point) :type '++minibrief/profile-button)
       (insert "\n\n"))
-    (minibrief/show "Habitica")))
+    (++minibrief/show "Habitica")))
 
 ;; need https://github.com/soimort/translate-shell
 (use-package translate-shell)
@@ -73,7 +73,7 @@
   ;; (setq translate-shell-command "proxychains4 -q trans -t en+zh %s"
   ;;       translate-shell-brief-command "proxychains4 -q trans -brief -t zh+en %s"))
 
-(defun minibrief/translate-shell-mix (word)
+(defun ++minibrief/translate-shell-mix (word)
   (let ((result
          (concat
           (replace-regexp-in-string "\n" "; "
@@ -85,35 +85,35 @@
     (add-to-list 'translate-shell-brief-cache (cons (intern word) result))
     result))
 
-(defun minibrief/shwo-translation (&optional word)
+(defun ++minibrief/shwo-translation (&optional word)
   "Show the explanation of WORD in the echo area."
   (interactive
    (list (translate-shell--read-string)))
   (message "google translating...")
-  (let* ((buf (minibrief/buffer-name "Translation"))
+  (let* ((buf (++minibrief/buffer-name "Translation"))
          (word-sym (intern word))
          (result (if (assq word-sym translate-shell-brief-cache)
                      (assoc-default word-sym translate-shell-brief-cache)
-                   (minibrief/translate-shell-mix word))))
+                   (++minibrief/translate-shell-mix word))))
     (message "google translated")
     (with-current-buffer (get-buffer-create buf)
       (erase-buffer)
       (insert "\n")
       (insert result)
       (insert "\n"))
-    (minibrief/show "Translation")))
+    (++minibrief/show "Translation")))
 
 
-(defun minibrief/pop-toggle ()
+(defun ++minibrief/pop-toggle ()
   (interactive)
-  (let ((select (completing-read "Show: " (minibrief/options))))
+  (let ((select (completing-read "Show: " (++minibrief/options))))
   (pcase select
-    ("Close" (minibrief/hide minibrief/show--name)
-     (setq minibrief/show--name nil))
-    ("*Messages*" (minibrief/show select "#bbc2cf" 37 50)
-     (minibrief/message-tail)
-     (advice-add 'message :after #'minibrief/message-tail))
-    ((guard (member select minibrief/name-list)) (minibrief/show select)); todo memq
+    ("Close" (++minibrief/hide ++minibrief/show--name)
+     (setq ++minibrief/show--name nil))
+    ("*Messages*" (++minibrief/show select "#bbc2cf" 37 50)
+     (++minibrief/message-tail)
+     (advice-add 'message :after #'++minibrief/message-tail))
+    ((guard (member select ++minibrief/name-list)) (++minibrief/show select)); todo memq
     (unknown (message (format "unknown minibrief name '%s'" unknown))))))
 
 (message "[config] Apply config-minibrief")

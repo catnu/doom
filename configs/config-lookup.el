@@ -19,7 +19,7 @@
 (defun ++lookup/url-action (url)
   (pcase url
     ((rx "lookup://:translate:/" (let query (0+ anything)))
-     (funcall-interactively #'minibrief/shwo-translation
+     (funcall-interactively #'++minibrief/shwo-translation
                             (if (eq query "")
                                 (or (thing-at-point 'word)
                                     (translate-shell--read-string))
@@ -88,9 +88,9 @@ QUERY must be a string, and PROVIDER must be a key of
 (advice-add '+lookup/online-select :before #'++lookup/use-search-online)
 
 (map! :leader
-      ;; :desc "Translation" "st" #'minibrief/shwo-translation
-      :desc "Bref buffer Helper" "hh" #'minibrief/pop-toggle
-      :desc "Bref buffer Habitica" "hH" #'minibrief/show-habitica-character
+      ;; :desc "Translation" "st" #'++minibrief/shwo-translation
+      :desc "Bref buffer Helper" "hh" #'++minibrief/pop-toggle
+      :desc "Bref buffer Habitica" "hH" #'++minibrief/show-habitica-character
       :desc "Look up online (w/ prompt)" "so" #'+lookup/online-select
       "sO" nil)
 
