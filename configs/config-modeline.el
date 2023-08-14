@@ -23,7 +23,7 @@
 (defun ++modeline/show-modify-state ()
   "Change mode line color to notify user evil current state."
   (let ((file-modified (and (not (minibufferp))
-                            (buffer-file-name (current-buffer))
+                            buffer-file-name
                             (buffer-modified-p))))
     (unless (eq ++modeline/show-modify file-modified)
       (setq ++modeline/show-modify file-modified)

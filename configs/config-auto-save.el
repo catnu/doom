@@ -13,7 +13,7 @@
     "The blacklist of buffers to auto save.")
 
   (defvar ++auto-save/disabled-modes
-    '(fundamental-mode so-long-mode)
+    '(fundamental-mode so-long-mode emacs-everywhere-mode)
     "The mode list not ot enable auto save")
 
   (defmacro ++with-suppressed-message (&rest body)
@@ -62,7 +62,7 @@
   (defun ++auto-save/global-enable-mode ()
     (or (derived-mode-p 'special-mode)
         (memq major-mode ++auto-save/disabled-modes)
-        (null (buffer-file-name (current-buffer))); only buffer is visted file
+        (null buffer-file-name); only buffer is visted file
         (memq (buffer-name (current-buffer)) ++auto-save/buffer-name-blacklist)
         (++auto-save-mode +1)))
 
