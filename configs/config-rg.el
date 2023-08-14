@@ -31,18 +31,19 @@
 (use-package! deadgrep
   :config
   (add-hook 'deadgrep-mode-hook #'+word-wrap-mode)
-  ;; use completing-read instead of reading-from-minibuffer
-  (fset 'original-read-from-minibuffer (symbol-function 'read-from-minibuffer))
-  (defun ++rg/completing-read-from-minibuffer (prompt &optional a b c history sym-name d)
-    "hack first read-from-minibuffer call to completing-read"
-    (fset 'read-from-minibuffer (symbol-function 'original-read-from-minibuffer)) ;prevent loop and reset to normal
-    (completing-read prompt (eval history) nil nil sym-name))
   (defun ++rg/deadgrep (search-term &optional directory)
-    (interactive (list
-                  (progn
-                    (fset 'read-from-minibuffer (symbol-function '++rg/completing-read-from-minibuffer))
-                    (deadgrep--read-search-term))))
-    (fset 'read-from-minibuffer (symbol-function 'original-read-from-minibuffer)) ;reset to normal
+    (interactive
+     (list
+      ;; use completing-read instead of reading-from-minibuffer
+      (cl-letf (((symbol-function 'original-read-from-minibuffer)
+                 (symbol-function 'read-from-minibuffer)))
+        (cl-letf (((symbol-function 'read-from-minibuffer) ;; symbol function
+                   (lambda (prompt &optional a b c history sym-name d) ;; value
+                     "hack first read-from-minibuffer call to completing-read"
+                     (cl-letf (((symbol-function 'read-from-minibuffer) ;; prevent loop
+                                (symbol-function 'original-read-from-minibuffer)))
+                       (completing-read prompt (eval history) nil nil sym-name)))))
+          (deadgrep--read-search-term)))))
     (funcall-interactively #'deadgrep search-term directory))
 
   (defun ++rg/deadgrep-view-result-other-window ()
