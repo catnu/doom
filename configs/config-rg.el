@@ -73,6 +73,7 @@
 
 (map! :leader
       :desc "directory special file" "fd" #'find-file-in-current-directory-by-selected
+      :desc "directory special file" "fp" #'find-file-in-project-by-selected
       :desc "project special file" "sf" #'find-file-in-project-by-selected
       (:prefix ("sr" . "ripgrep refactor")
        :desc "symbol in current file" "f" #'color-rg-search-symbol-in-current-file

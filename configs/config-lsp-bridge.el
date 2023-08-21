@@ -96,7 +96,7 @@
   (setq acm-enable-dabbrev nil)
   (setq lsp-bridge-python-lsp-server "pyright-background-analysis")
   (setq lsp-bridge-disable-backup nil)
-  (setq lsp-bridge-symbols-enable-which-func t)
+  ;; (setq lsp-bridge-symbols-enable-which-func t)
   (setq lsp-bridge-enable-mode-line nil)
   (setq lsp-bridge-enable-signature-help nil)
   (setq lsp-bridge-python-ruff-lsp-server "pyright-background-analysis_ruff")

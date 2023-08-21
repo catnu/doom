@@ -76,8 +76,7 @@
   (setq sort-tab-name-max-length 20))
 
 (use-package! ace-window
-  :defer t
-  :init
+  ;; :init
   ;; (global-set-key [remap other-window] #'ace-window)
   :config
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
@@ -92,6 +91,24 @@
   (setq aw-scope 'global
         aw-background t)
   (add-to-list 'aw-ignored-buffers "*sort-tab*"))
+
+;; ace jump pinyin
+(use-package ace-jump-mode
+  :config
+  ;;;override
+  ;;;(loop for x in (list ...) if (evenp x) collect x)
+  (defun ace-jump-list-visual-area()
+    "Based on `ace-jump-mode-scope', search the possible buffers that is showing now."
+    (loop for f in (frame-list)
+          append (loop for w in (window-list f)
+                       if (not (member (buffer-name (window-buffer w)) aw-ignored-buffers))
+                       collect (make-aj-visual-area :buffer (window-buffer w)
+                                                    :window w
+                                                    :frame f)))))
+(use-package ace-pinyin
+  :config
+  (setq ace-pinyin-use-avy nil)
+  (global-set-key (kbd "C-,") #'ace-pinyin-dwim))
 
 (map! (:leader
        ;; SPC w
@@ -108,8 +125,8 @@
        :n "wa" #'ace-window
        ;; :n "wo" #'other-window
        :n "we" #'evil-window-exchange
-       :n "wd" #'ace-delete-other-windows
-       :n "wD" #'ace-delete-window ))
+       :n "wD" #'ace-delete-other-windows
+       :n "wd" #'ace-delete-window))
 
 (global-set-key [remap other-window] #'ace-window)
 

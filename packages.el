@@ -51,6 +51,8 @@
 
 ;; for config-lookup
 (package! dash-at-point)
+;; TODO add lsp-bridge backend
+;; (package! symbols-outline)
 
 ;; for config-windows
 (package! ace-window)
@@ -75,3 +77,7 @@
 ;; for config-rg
 (package! rg)
 (package! deadgrep)
+
+;; for config evil
+(package! ace-jump-mode)
+(package! ace-pinyin)

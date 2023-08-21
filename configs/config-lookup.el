@@ -87,6 +87,16 @@ QUERY must be a string, and PROVIDER must be a key of
   (advice-remove '+lookup/online-select #'++lookup/use-search-online))
 (advice-add '+lookup/online-select :before #'++lookup/use-search-online)
 
+;; (lsp-bridge-call-file-api "document_symbol" (lsp-bridge--position))
+;; (global-set-key (kbd "C-c i") 'symbols-outline-show)
+;; (with-eval-after-load 'symbols-outline
+  ;; By default the ctags backend is selected
+  ;; (unless (executable-find "ctags")
+    ;; (setq symbols-outline-fetch-fn #'symbols-outline-lsp-fetch)
+    ;; )
+  ;; (setq symbols-outline-window-position 'right)
+  ;; (symbols-outline-follow-mode))
+
 (map! :leader
       ;; :desc "Translation" "st" #'++minibrief/shwo-translation
       :desc "Bref buffer Helper" "hh" #'++minibrief/pop-toggle

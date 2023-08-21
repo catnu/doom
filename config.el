@@ -70,18 +70,24 @@
 
 ;; global replace
 ;; (global-set-key [remap +default/find-in-notes] #'consult-notes)
-(global-set-key [remap isearch-forward] #'consult-line)             ; C-s
+(global-set-key [remap isearch-forward] #'+default/search-buffer)   ; C-s
 (global-set-key [remap list-buffers] #'consult-buffer-other-window) ; C-x C-b
 (global-set-key (kbd "C-<backspace>") #'(lambda () (interactive) (kill-line 0)))
 (global-set-key (kbd "C-j") nil)                                ; prevent C-j
+(global-set-key (kbd "C-q") nil)                                ; prevent C-q
+(global-set-key (kbd "C-\\") nil)                               ; prevent C-q
 
 (map! :v "C-f" #'indent-for-tab-command ;; = evil-indent
       (:leader
        :desc "Pop up scratch buffer" "x"
        #'(lambda () (interactive)
-           (let ((window (get-buffer-window "*doom:scratch*")))
-             (if window (delete-window window)
-               (call-interactively #'doom/open-scratch-buffer))))
+           ;; option 1 if has scratch winodw kill it
+           ;; (let ((window (get-buffer-window "*doom:scratch*")))
+           ;;   (if window (delete-window window)
+           ;;     (call-interactively #'doom/open-scratch-buffer)))
+           ;; option 2 kill scratch window only in it
+           (if (string= (buffer-name (current-buffer)) "*doom:scratch*") (delete-window)
+             (call-interactively #'doom/open-scratch-buffer)))
        ;; my new prefix
        (:prefix ("\\" . "Quick")
         :desc "Cleanup posframe cache" "c"  #'(lambda () (interactive)

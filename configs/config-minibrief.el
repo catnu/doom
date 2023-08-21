@@ -8,9 +8,13 @@
   (if (string-match-p "^*" name) name (format " *Minibrief %s*" name)))
 
 (defun ++minibrief/options (&optional list)
-  (append (or list (remove ++minibrief/show--name ++minibrief/name-list))
-          (if (string= ++minibrief/show--name "Habitica")
-              '("Close" "Habitica Profile") '("Close"))))
+  (let ((list (or list (remove ++minibrief/show--name ++minibrief/name-list))))
+    (if ++minibrief/show--name
+        (append (or list (remove ++minibrief/show--name ++minibrief/name-list))
+                (if (string= ++minibrief/show--name "Habitica")
+                    '("Close" "Habitica Profile")
+                  '("Close")))
+      list)))
 
 (defun ++minibrief/show (brief-name &optional color height width)
   (and ++minibrief/show--name (++minibrief/hide ++minibrief/show--name))
