@@ -8,7 +8,9 @@
   (if (string-match-p "^*" name) name (format " *Minibrief %s*" name)))
 
 (defun ++minibrief/options (&optional list)
-  (append (or list (remove ++minibrief/show--name ++minibrief/name-list)) '("Close")))
+  (append (or list (remove ++minibrief/show--name ++minibrief/name-list))
+          (if (string= ++minibrief/show--name "Habitica")
+              '("Close" "Habitica Profile") '("Close"))))
 
 (defun ++minibrief/show (brief-name &optional color height width)
   (and ++minibrief/show--name (++minibrief/hide ++minibrief/show--name))
@@ -39,7 +41,7 @@
     (and window (with-current-buffer (window-buffer window)
                   (set-window-point window (point-max))))))
 
-(defun ++minibrief/habitica-profile-button-pressed (_button)
+(defun ++minibrief/habitica-profile-button-pressed (&optional _button)
   ;; (funcall +lookup-open-url-fn private/habitica-profile-url)
   (funcall +lookup-open-url-fn "https://habitica.com/"))
 
@@ -112,6 +114,7 @@
     ("*Messages*" (++minibrief/show select "#bbc2cf" 37 50)
      (++minibrief/message-tail)
      (advice-add 'message :after #'++minibrief/message-tail))
+    ("Habitica Profile" (++minibrief/habitica-profile-button-pressed))
     ((guard (member select ++minibrief/name-list)) (++minibrief/show select)); todo memq
     (unknown (message (format "unknown minibrief name '%s'" unknown))))))
 

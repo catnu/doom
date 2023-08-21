@@ -15,6 +15,7 @@
 ;; packages: from doom/packages.el or doom/lib
 (let ((subconfigs
        '("doom"              ; doom ui, doom font
+         "evil"
          "posframe"          ; pop childframe
          "windows"           ; tab and windows
          "borg"              ; secondary packages management, lib management
@@ -56,8 +57,8 @@
             ;; enable mode here
             (+global-word-wrap-mode) ;need wrod-wrap moduole
             ;; show 80 charater boundary
-            (set-face-foreground 'fill-column-indicator "gray40")
-            (global-display-fill-column-indicator-mode)
+            ;; (set-face-foreground 'fill-column-indicator "gray40")
+            ;; (global-display-fill-column-indicator-mode)
             ;; tracking
             ;; (global-wakatime-mode)
             ;; vimish fold mode
