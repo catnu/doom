@@ -31,19 +31,34 @@
 (use-package! deadgrep
   :config
   (add-hook 'deadgrep-mode-hook #'+word-wrap-mode)
+  ;;;override
+  (defun ++rg/deadgrep--read-search-term ()
+    "Read a search term from the minibuffer.
+If region is active, return that immediately.  Otherwise, prompt
+for a string, offering the current word as a default."
+    (let (search-term)
+      (if (use-region-p)
+          (progn
+            (setq search-term
+                  (buffer-substring-no-properties (region-beginning) (region-end)))
+            (deactivate-mark))
+        (let* ((sym (symbol-at-point))
+               (sym-name (when sym
+                           (substring-no-properties (symbol-name sym))))
+               ;; TODO: prompt should say search string or search regexp
+               ;; as appropriate.
+               (prompt
+                (deadgrep--search-prompt sym-name)))
+          (setq search-term
+                (completing-read prompt deadgrep-history nil nil sym-name))
+          (when (equal search-term "")
+            (setq search-term sym-name))))
+      (unless (equal (car deadgrep-history) search-term)
+        (push search-term deadgrep-history))
+      search-term))
+
   (defun ++rg/deadgrep (search-term &optional directory)
-    (interactive
-     (list
-      ;; use completing-read instead of reading-from-minibuffer
-      (cl-letf (((symbol-function 'original-read-from-minibuffer)
-                 (symbol-function 'read-from-minibuffer)))
-        (cl-letf (((symbol-function 'read-from-minibuffer) ;; symbol function
-                   (lambda (prompt &optional a b c history sym-name d) ;; value
-                     "hack first read-from-minibuffer call to completing-read"
-                     (cl-letf (((symbol-function 'read-from-minibuffer) ;; prevent loop
-                                (symbol-function 'original-read-from-minibuffer)))
-                       (completing-read prompt (eval history) nil nil sym-name)))))
-          (deadgrep--read-search-term)))))
+    (interactive (list (++rg/deadgrep--read-search-term)))
     (funcall-interactively #'deadgrep search-term directory))
 
   (defun ++rg/deadgrep-view-result-other-window ()

@@ -1,5 +1,8 @@
 ;;; etc/borg/config.el -*- lexical-binding: t; -*-
 
+(when (native-comp-available-p)
+  (setq borg-compile-function #'borg-byte+native-compile))
+
 (defun borg-batch-rebuild-init ()
   (message "\n--- [init.el] ---\n")
   (message "skipp by etc/borg/config.el"))

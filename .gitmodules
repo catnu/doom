@@ -4,24 +4,12 @@
 [submodule "borg"]
 	path = lib/borg
 	url = git@github.com:emacscollective/borg.git
-[submodule "closql"]
-	path = lib/closql
-	url = git@github.com:emacscollective/closql.git
 [submodule "color-rg"]
 	path = lib/color-rg
 	url = https://github.com/manateelazycat/color-rg
-[submodule "compat"]
-	path = lib/compat
-	url = https://git.sr.ht/~pkal/compat
-[submodule "dash"]
-	path = lib/dash
-	url = https://github.com/magnars/dash.el
 [submodule "emacs-habitica"]
 	path = lib/emacs-habitica
 	url = git@github.com:ingtshan/emacs-habitica.git
-[submodule "emacsql"]
-	path = lib/emacsql
-	url = git@github.com:skeeto/emacsql.git
 [submodule "emojify"]
 	path = lib/emojify
 	url = https://github.com/iqbalansari/emacs-emojify
@@ -34,9 +22,6 @@
 [submodule "find-file-in-project"]
 	path = lib/find-file-in-project
 	url = https://github.com/redguardtoo/find-file-in-project
-[submodule "ht"]
-	path = lib/ht
-	url = https://github.com/Wilfred/ht.el
 [submodule "llama"]
 	path = lib/llama
 	url = https://git.sr.ht/~tarsius/llama
@@ -49,6 +34,9 @@
 [submodule "lsp-bridge-core"]
 	path = lib/lsp-bridge-core
 	recursive-byte-compile = true
+[submodule "mind-wave"]
+	path = lib/mind-wave
+	url = git@github.com:manateelazycat/mind-wave.git
 [submodule "org-habitica"]
 	path = lib/org-habitica
 	url = git@github.com:LewWadoo/org-habitica.git

@@ -105,10 +105,24 @@
                        collect (make-aj-visual-area :buffer (window-buffer w)
                                                     :window w
                                                     :frame f)))))
+
 (use-package ace-pinyin
   :config
   (setq ace-pinyin-use-avy nil)
-  (global-set-key (kbd "C-,") #'ace-pinyin-dwim))
+  (defun ++windows/ace-pinyin-dwim (&optional prefix)
+    "With PREFIX, only search Chinese.
+Without PREFIX, search both Chinese and English."
+    (interactive "P")
+    (aw--make-backgrounds (aw-window-list))
+    (let ((query-char (if ace-pinyin-use-avy
+                          (read-char "char: ")
+                        (read-char "Query Char:"))))
+      (mapc #'delete-overlay aw-overlays-back)
+      (ace-pinyin--jump-impl query-char prefix)))
+  (dolist (state '(emacs motion normal visual insert))
+    (eval `(define-key ,(intern (format "evil-%s-state-map" state))
+            (kbd "M-,") #'++windows/ace-pinyin-dwim)))
+  (global-set-key (kbd "M-,") #'++windows/ace-pinyin-dwim))
 
 (map! (:leader
        ;; SPC w

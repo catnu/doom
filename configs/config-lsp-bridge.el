@@ -1,14 +1,16 @@
 ;;; configs/config-lsp-bridge.el -*- lexical-binding: t; -*-
 
 (defvar ++lsp-bridge/follow-hooks
-  '(c-mode-hook
+  '(;; c/c++ go rust python ruby
+    c-mode-hook
     c++-mode-hook
+    go-mode-hook
     python-mode-hook
     sh-mode-hook
     emacs-lisp-mode-hook
     ;; org-mode-hook
     ruby-mode-hook
-    vue-mode-hook
+    ;; vue-mode-hook
     rjsx-mode-hook
     ))
 
@@ -26,8 +28,9 @@
                 +lookup-implementations-functions (append '(lsp-bridge-find-impl) +lookup-implementations-functions)
                 +lookup-references-functions (append '(lsp-bridge-find-references) +lookup-references-functions)))
 
-  (unless (equal major-mode 'org-mode)
-    (yas-minor-mode -1))
+  ;; doom company
+  ;; (unless (equal major-mode 'org-mode)
+  ;;   (yas-minor-mode -1))
 
   ;; use lsp bridge as diagnosis
   (when (member major-mode '(python-mode c-mode c++-mode sh-mode))
@@ -83,10 +86,10 @@
 (use-package! lsp-bridge
   :commands lsp-bridge-mode
   :init
-  (setq acm-enable-quick-access t)
-  (setq acm-quick-access-modifier 'super)
-  (setq acm-quick-access-keys '("j" "l" "f" "s" "." "g" "d" "b" "x" ","))
-  ;;(setq acm-quick-access-keys '("j" "l" "3" "4" "5" "6" "7" "8" "9" ","))
+  ;; can't find enough prefix key
+  ;; (setq acm-enable-quick-access t)
+  ;; (setq acm-quick-access-modifier 'super)
+  ;; (setq acm-quick-access-keys '("j" "l" "f" "s" "." "g" "d" "b" "x" ","))
   (setq acm-enable-tabnine nil)
   (setq acm-enable-yas nil)
   (setq acm-enable-preview t)
@@ -211,6 +214,8 @@
   ;; Enable indentation+completion using the TAB key.
   ;; `completion-at-point' is often bound to M-TAB.
   (setq tab-always-indent 'complete))
+
+;;;mind-wave
 
 (message "[config] Apply config-lsp-bridge")
 

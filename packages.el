@@ -49,6 +49,9 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
 
+;; for epkg borg
+;; (package! closql)
+
 ;; for config-lookup
 (package! dash-at-point)
 ;; TODO add lsp-bridge backend
@@ -78,6 +81,17 @@
 (package! rg)
 (package! deadgrep)
 
-;; for config evil
+;; for config-evil
 (package! ace-jump-mode)
 (package! ace-pinyin)
+
+;; for config-notes
+;; (package! obsidian)
+
+;; for org babel
+(package! ob-html
+  :recipe (:host github
+           :repo "misohena/ob-html"))
+
+;; spell check
+(package! jinx)

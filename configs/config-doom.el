@@ -30,18 +30,19 @@
 (setq doom-theme 'doom-vibrant)
 
 (after! doom-modeline
-  :config
-  (setq doom-modeline-lsp t
-        doom-modeline-height 10
-        ;; doom-modeline-bar-width 2
-        )
-  (display-time-mode 1)                             ; Enable time in the mode-line
-  (when (string-match-p "^Power Battery" (battery)) ; On laptops...
-    (display-battery-mode 1))                       ; it's nice to know how much power you have
+  (unless (featurep 'doom-modeline)
+    :config
+    (setq doom-modeline-lsp t
+          doom-modeline-height 10
+          ;; doom-modeline-bar-width 2
+          )
+    (display-time-mode 1)                             ; Enable time in the mode-line
+    (when (string-match-p "^Power Battery" (battery)) ; On laptops...
+      (display-battery-mode 1))                       ; it's nice to know how much power you have
 
-  ;; (set-face-attribute 'mode-line-active nil :family "JuliaMono Bold" :height 160) ; For 29+
-  (set-face-attribute 'mode-line nil :family "Mononoki Nerd Font Mono" :height 180)
-  (set-face-attribute 'mode-line-inactive nil :family "Mononoki Nerd Font Mono" :height 180))
+    ;; (set-face-attribute 'mode-line-active nil :family "JuliaMono Bold" :height 160) ; For 29+
+    (set-face-attribute 'mode-line nil :family "Mononoki Nerd Font Mono" :height 180)
+    (set-face-attribute 'mode-line-inactive nil :family "Mononoki Nerd Font Mono" :height 180)))
 
 ;; (remove-hook 'window-setup-hook #'doom-init-theme-h)
 ;; (add-hook 'after-init-hook #'doom-init-theme-h 'append)

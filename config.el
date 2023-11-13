@@ -15,25 +15,30 @@
 ;; packages: from doom/packages.el or doom/lib
 (let ((subconfigs
        '("doom"              ; doom ui, doom font
+         "org-protocol"
          "evil"
-         "posframe"          ; pop childframe
-         "windows"           ; tab and windows
-         "borg"              ; secondary packages management, lib management
-         "emojify"           ; native emojis in emacs
+         "posframe"              ; pop childframe
+         "windows"               ; tab and windows
+         "borg"                  ; secondary packages management, lib management
+         "emojify"               ; native emojis in emacs
          "lookup"
          "rg"
          "habitica"
          "applescript"
          "web-dev"
          "lsp-bridge"
+         ;; "notes"
+         "git"
          "better-default")))
   (dolist (name subconfigs)
     (require (intern (format "config-%s" name)))))
 
-(use-package habitica)
+;; (use-package habitica)
 
 (add-to-list '+lookup-provider-url-alist
              '("Emacs China" "https://emacs-china.org/search?expanded=true&q=%s"))
+
+;; (add-to-list '+org-babel-native-async-langs 'restclient)
 
 (defun save-all-buffers ()
   "save buffers if there is modfiy remained"
@@ -48,25 +53,6 @@
                        (save-some-buffers 0)
                        (message "all buffers saved"))
       (message "no modified buffers"))))
-
-(add-hook 'doom-first-buffer-hook
-          (lambda ()
-            ;; SPC tab 1~9 for workspace
-            ;; SPC 1~9 for tab
-            (sort-tab-turn-on) ;(require 'config-windows)
-            ;; enable mode here
-            (+global-word-wrap-mode) ;need wrod-wrap moduole
-            ;; show 80 charater boundary
-            ;; (set-face-foreground 'fill-column-indicator "gray40")
-            ;; (global-display-fill-column-indicator-mode)
-            ;; tracking
-            ;; (global-wakatime-mode)
-            ;; vimish fold mode
-            ;; (vimish-fold-global-mode 1)
-            ;; fix evil-collection error
-            (require 'config-modeline)
-            (require 'config-auto-save); auto save with evil
-            ))
 
 ;; global replace
 ;; (global-set-key [remap +default/find-in-notes] #'consult-notes)
@@ -88,13 +74,33 @@
            ;; option 2 kill scratch window only in it
            (if (string= (buffer-name (current-buffer)) "*doom:scratch*") (delete-window)
              (call-interactively #'doom/open-scratch-buffer)))
-       ;; my new prefix
-       (:prefix ("\\" . "Quick")
-        :desc "Cleanup posframe cache" "c"  #'(lambda () (interactive)
-                                                (message "do vertico-posframe-cleanup")
-                                                (vertico-posframe-cleanup))
-        :desc "Prpjectile refresh cache" "p" #'projectile-invalidate-cache
-        :desc "Save all buffers" "s" #'save-all-buffers)))
+       "it" #'hl-todo-insert))
+
+;; init later
+(add-hook 'doom-first-buffer-hook
+          (lambda ()
+            (require 'config-utils)
+            ;; SPC tab 1~9 for workspace
+            ;; SPC 1~9 for tab
+            (sort-tab-turn-on) ;(require 'config-windows)
+            ;; enable mode here
+            (+global-word-wrap-mode) ;need wrod-wrap moduole
+            ;; show 80 charater boundary
+            ;; (set-face-foreground 'fill-column-indicator "gray40")
+            ;; (global-display-fill-column-indicator-mode)
+            ;; tracking
+            ;; (global-wakatime-mode)
+            ;; vimish fold mode
+            ;; (vimish-fold-global-mode 1)
+            ;; fix evil-collection error
+            (add-hook 'messages-buffer-mode-hook #'+word-wrap-mode)
+            (require 'config-modeline)
+            (require 'config-auto-save); auto save with evil
+            (require 'config-mind-wave)
+            (after! config-lsp-bridge (require 'config-treesit))
+            (after! (or (featurep 'org) (require 'ob-async)))
+            ;; (require 'config-jinx)
+            ))
 
 ;; (advice-add 'risky-local-variable-p :override #'ignore-risky-local-variable-p-1)
 ;; (defun ignore-risky-local-variable-p-1 (sym &optional _ignored)
