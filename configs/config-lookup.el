@@ -13,8 +13,8 @@
              '("Dash Snippets" "lookup://:d-snippet:/%s"))
 (add-to-list '+lookup-provider-url-alist
              '("Dash" "lookup://:dash:/%s"))
-(add-to-list '+lookup-provider-url-alist
-             '("Google Translate" "lookup://:translate:/%s"))
+;; (add-to-list '+lookup-provider-url-alist
+;;              '("Google Translate" "lookup://:translate:/%s"))
 ;; handle url
 (defun ++lookup/url-action (url)
   (pcase url
@@ -79,6 +79,20 @@ QUERY must be a string, and PROVIDER must be a key of
                   (signal (car e) (cdr e))))
                (throw 'done t)))))))
 
+(defun ++lookup/bob-translation (&optional word)
+  "Show the explanation of WORD in the echo area."
+  (interactive
+   (list (if (use-region-p)
+             (buffer-substring-no-properties
+              (region-beginning) (region-end))
+           (or (thing-at-point 'word) (read-string "Bob translate: ")))))
+  (do-applescript
+   (format "\
+tell application \"Bob\"
+  launch
+  translate \"%s\"
+end tell" (replace-regexp-in-string "[\"\\]" "'" word))))
+
 ;; patch
 (defun ++lookup/use-search-online ()
   (fset '+lookup/online #'++lookup/search-online)
@@ -101,7 +115,7 @@ QUERY must be a string, and PROVIDER must be a key of
       ;; :desc "Translation" "st" #'++minibrief/shwo-translation
       :desc "Bref buffer Helper" "hh" #'++minibrief/pop-toggle
       :desc "Bref buffer Habitica" "hH" #'++minibrief/show-habitica-character
-      :desc "Look up online (w/ prompt)" "so" #'+lookup/online-select
+      :desc "Look up online (w/ prompt)" "sg" #'+lookup/online-select
       "sO" nil)
 
 (message "[config] Apply config-lookup")

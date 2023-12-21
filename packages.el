@@ -95,3 +95,17 @@
 
 ;; spell check
 (package! jinx)
+
+;; symbol highlight
+(package! symbol-overlay)
+
+;; gitmoji
+(package! gitmoji
+  :recipe (:host github
+           :repo "janusvm/emacs-gitmoji"
+           :files ("*.el" "data")))
+
+;; for leetcode-cn
+(package! graphql)
+(package! aio)
+(package! log4e)

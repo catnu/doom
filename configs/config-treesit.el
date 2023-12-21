@@ -50,8 +50,13 @@
   (add-hook 'c++-mode-hook #'c++-ts-mode 'append)
   (after! c-ts-mode (++config/ts-mode 'c++-mode 'c++-ts-mode))
 
+  (use-package! go-ts-mode
+      :config
+    (setq go-ts-mode-indent-offset 4))
+
   (add-hook 'go-mode-hook #'go-ts-mode 'append)
-  (after! go-ts-mode (++config/ts-mode 'go-mode 'go-ts-mode))
+  (after! go-ts-mode
+    (++config/ts-mode 'go-mode 'go-ts-mode))
 
   (add-hook 'ruby-mode-hook #'ruby-ts-mode 'append)
   (after! ruby-ts-mode (++config/ts-mode 'ruby-mode 'ruby-ts-mode))

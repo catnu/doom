@@ -14,8 +14,7 @@
 ;; provide: (provide 'config-<name>)
 ;; packages: from doom/packages.el or doom/lib
 (let ((subconfigs
-       '("doom"              ; doom ui, doom font
-         "org-protocol"
+       '("doom"                  ; doom ui, doom font
          "evil"
          "posframe"              ; pop childframe
          "windows"               ; tab and windows
@@ -27,8 +26,9 @@
          "applescript"
          "web-dev"
          "lsp-bridge"
-         ;; "notes"
          "git"
+         "org-protocol"          ; protocol, hammerspoon
+         "notes"
          "better-default")))
   (dolist (name subconfigs)
     (require (intern (format "config-%s" name)))))
@@ -99,7 +99,7 @@
             (require 'config-mind-wave)
             (after! config-lsp-bridge (require 'config-treesit))
             (after! (or (featurep 'org) (require 'ob-async)))
-            ;; (require 'config-jinx)
+            (require 'config-jinx)
             ))
 
 ;; (advice-add 'risky-local-variable-p :override #'ignore-risky-local-variable-p-1)

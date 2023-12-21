@@ -1,4 +1,6 @@
 ;;; configs/config-org-protocol.el -*- lexical-binding: t; -*-
+(require 'config-hammerspoon)
+
 (defvar ++vault-path-alist nil)
 
 (defun ++org-protocol/vault-path (name)
@@ -35,31 +37,36 @@
           (select-frame-set-input-focus frame)
           (throw 'found frame))))))
 
+(defun ++org-pop/journal (&optional focus)
+  (if (frame-live-p ++org-pop/frame)
+      (progn (x-focus-frame ++org-pop/frame)
+             (hammerspoon-do "toggleOrgJournalPop()"))
+    (progn (setq ++org-pop/frame
+                 (make-frame '((name . "org-journal")
+                               (alpha-background . 30)
+                               (alpha . 85))))
+           ;; (set-frame-parameter ++org-pop/frame 'alpha-background 30)
+           ;; (set-frame-parameter ++org-pop/frame 'alpha '(85 . 50))
+           (select-frame-set-input-focus ++org-pop/frame)
+           ;; press cmd + ctrl - 4
+           (do-applescript "\
+tell application \"Emacs\"
+  activate
+  tell application \"System Events\"
+    key code 21 using {command down, control down}
+  end tell
+end tell")
+           (org-journal-new-entry t)))
+  (and focus (select-frame-set-input-focus ++org-pop/frame))
+  (buffer-name))
+
 (defun ++org-pop/focus (frame-name)
   "like `org-protocol://pop-focus?name=Doom%20Emacs'"
   (let* ((splitparts (org-protocol-parse-parameters frame-name nil '(:name)))
          (name (plist-get splitparts :name)))
     (pcase name
       ("Doom Emacs" (++org-pop/select-frame-by-name-regexp name))
-      ("Org Journal"
-       (unless (frame-live-p ++org-pop/frame)
-         (setq ++org-pop/frame
-               (make-frame '((name . "org-journal")
-                             (alpha-background . 30)
-                             (alpha . 85))))
-         ;; (set-frame-parameter ++org-pop/frame 'alpha-background 30)
-         ;; (set-frame-parameter ++org-pop/frame 'alpha '(85 . 50))
-         (select-frame-set-input-focus ++org-pop/frame)
-         (call-interactively #'org-journal-new-entry)
-         (do-applescript ; press cmd + ctrl - 4
-          "tell application \"System Events\"\nkey code 21 using {command down, control down}\nend tell"))
-       ;; (select-frame-set-input-focus ++org-pop/frame)
-       ;; Set the size and position of the emacs-everywhere frame.
-       (cl-destructuring-bind (x . y)
-           (mouse-absolute-pixel-position)
-         (set-frame-position ++org-pop/frame
-                             (- x 100)
-                             (- y 50)))))
+      ("Org Journal" (++org-pop/journal)))
     nil))
 
 (with-eval-after-load 'org-protocol

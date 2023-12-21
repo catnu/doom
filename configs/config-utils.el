@@ -138,32 +138,91 @@ Do not try to make a new directory or anything fancy."
 ;;                 (next-line))
 
 ;;               (insert result))))))))
+(defun mc/remove-fake-cursors ()
+  "lazyload multiple-cursors"
+  (require 'multiple-cursors))
+
+(defun ++utils/replace-region-newline-to-space ()
+  (interactive)
+  (and (use-region-p)
+       (let* ((begin (region-beginning))
+              (end (region-end))
+              (r-min (if (< begin end) begin end))
+              (r-max (- (if (> begin end) begin end) 1))) ;; exclude last newline
+         (deactivate-mark)
+         (mc/remove-fake-cursors)
+         (goto-char r-min)
+         (while (search-forward-regexp "[^\n]\n[^\n]" r-max t)
+           (replace-match
+            (string-replace "\n" " " (string-replace "-\n" "" (match-string 0)))
+            nil t)
+           (backward-char)
+           (mc/create-fake-cursor-at-point))
+         (goto-char r-min))))
+
+(use-package! symbol-overlay
+  :config
+  ;; override
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "p") #'symbol-overlay-jump-prev)
+    (define-key map (kbd "N") #'symbol-overlay-jump-prev)
+    (define-key map (kbd "n") #'symbol-overlay-jump-next)
+    (define-key map (kbd "<") #'symbol-overlay-jump-first)
+    (define-key map (kbd ">") #'symbol-overlay-jump-last)
+    (define-key map (kbd "r") #'symbol-overlay-rename)
+    (define-key map (kbd "R") #'symbol-overlay-query-replace)
+    (define-key map (kbd "C-e") #'symbol-overlay-echo-mark)
+    (define-key map (kbd "C-s") #'symbol-overlay-isearch-literally)
+    (define-key map (kbd "C-h") #'symbol-overlay-map-help)
+    (define-key map (kbd "C-g") #'symbol-overlay-remove-all)
+    (setq symbol-overlay-map map)))
 
 ;;; keybinding
+;; "(2-char) '(1-char) snipe across line
+;; s S (2-char) f F (1-char) snipe inline
 (map! :nvm ";" nil)
 (map! :nm "'" #'++windows/ace-pinyin-dwim
+      :nm "\"" #'ace-pinyin-jump-char-2
       (:prefix ";"
-       ;; jinx n, p, w, W
+       :desc "translation word or region" :nvm "w" #'++lookup/bob-translation
+       :desc "search online" :nvm "s" #'+lookup/online-select
+       ;; jinx
        :desc "next typo" :nvm "n" #'jinx-next
        :desc "previous typo" :nvm "N" #'jinx-previous
-       :desc "word correcting" :nvm "w" #'jinx-correct
-       :desc "Word confirm" :nvm "w" #'jinx-correct-word
+       :desc "word correcting" :nvm ";" #'jinx-correct
+       :desc "Word confirm" :nvm ":" #'jinx-correct-word
        ;; evil mark
-        :desc "set local mark" :nm "m" #'evil-set-marker
-        :desc "goto local mark" :nm "j" #'evil-goto-mark
-       (:prefix (";" . "code")
-        :desc "lsp popup documentation"      :nvm ";" #'lsp-bridge-popup-documentation
+        :desc "local mark to ?" :nm "l" #'evil-set-marker
+        :desc "goto local mark ?" :nm "j" #'evil-goto-mark
+       (:prefix ("h" . "highlight symbol")
+        :desc "highlight at point" :nvm "h" #'symbol-overlay-put
+        :desc "toggle show highlight scope or buffer" :nvm "t" #'symbol-overlay-toggle-in-scope
+        :desc "echo mark" :nvm "e" #'symbol-overlay-echo-mark
+        :desc "search highlight" :nvm "s" #'symbol-overlay-isearch-literally
+        :desc "quit all highlight" :nvm "q" #'symbol-overlay-remove-all)
+       (:prefix ("c" . "code")
+        :desc "lsp popup documentation"      :nvm "c" #'lsp-bridge-popup-documentation
         :desc "lsp scroll up in popup buf"   :nm "j"  #'lsp-bridge-popup-documentation-scroll-up
         :desc "lsp scroll down in popup buf" :nm "k"  #'lsp-bridge-popup-documentation-scroll-down )
+       (:prefix ("f" . "format")
+        :desc "format indent" :nvm "f" #'indent-for-tab-command
+        :desc "wrap remove" :nvm "w" #'++utils/replace-region-newline-to-space
+        :desc "quite fake cursor" :nvm "q" #'(lambda () (interactive) (mc/remove-fake-cursors)))
        ;; :nvm "s" #'evil-snipe-repeat
+       (:prefix ("m" . "make comment")
+        :nm "t" #'hl-todo-insert
+        :nm "s" #'comment-set-column
+        :nm "m" #'comment-indent)
        (:prefix ("b" . "buffer")
         :desc "save all buffers" :nm "s" #'save-all-buffers
         :desc "jump global mark" :nm "j" #'consult-global-mark)
-       (:prefix ("c" . "cache")
-        :desc "cleanup posframe cache" :nm "c"  #'(lambda () (interactive)
+       (:prefix ("u" . "cache")
+        :desc "verticon posframe cache cleanup " :nm "v"  #'(lambda () (interactive)
                                                     (message "do vertico-posframe-cleanup")
                                                     (vertico-posframe-cleanup))
         :desc "prpjectile refresh cache" :nm "p" #'projectile-invalidate-cache)))
+
+(map! :leader :nm "ig" #'gitmoji-insert-emoji)
 
 (map! :map org-mode-map :desc "execute src block babel async" :nm ";e" #'org-babel-execute-src-block)
 (map! :map emacs-lisp-mode-map :desc "eval last emacs sexp" :nm ";e" #'eros-eval-last-sexp)

@@ -53,7 +53,7 @@
        ;; ### 对话模式
        ;; 1. 新建 `test.chat` 文件， 将自动进入 `mind-wave-chat-mode`
        ;; 2. 执行命令 `mind-wave-chat-ask`（按下 Ctrl + j）， 输入问题， 等待 ChatGPT 回答
-       :desc "ask" :nvm "aa" #'mind-wave-chat-ask
+       :desc "ask" :nvm "ai" #'mind-wave-chat-ask
        ;; 3. 执行命令 `mind-wave-chat-continue` (按下 Ctrl + u), 继续回答
        :desc "continue" :nvm "ac" #'mind-wave-chat-continue
        ;; 4. 执行命令 `mind-wave-chat-generate-title` (按下 Ctrl + i), 根据内容重新生成标题
