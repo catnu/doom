@@ -76,13 +76,22 @@
              (call-interactively #'doom/open-scratch-buffer)))
        "it" #'hl-todo-insert))
 
+;; Support
+(use-package pinyinlib
+  :after orderless
+  :autoload pinyinlib-build-regexp-string
+  :init
+  (defun completion--regex-pinyin (str)
+    (orderless-regexp (pinyinlib-build-regexp-string str)))
+  (add-to-list 'orderless-matching-styles 'completion--regex-pinyin))
+
 ;; init later
 (add-hook 'doom-first-buffer-hook
           (lambda ()
             (require 'config-utils)
             ;; SPC tab 1~9 for workspace
             ;; SPC 1~9 for tab
-            (sort-tab-turn-on) ;(require 'config-windows)
+            ;; (sort-tab-turn-on) ;(require 'config-windows)
             ;; enable mode here
             (+global-word-wrap-mode) ;need wrod-wrap moduole
             ;; show 80 charater boundary
@@ -93,12 +102,12 @@
             ;; vimish fold mode
             ;; (vimish-fold-global-mode 1)
             ;; fix evil-collection error
-            (add-hook 'messages-buffer-mode-hook #'+word-wrap-mode)
+            ;; (add-hook 'messages-buffer-mode-hook #'+word-wrap-mode)
             (require 'config-modeline)
             (require 'config-auto-save); auto save with evil
-            (require 'config-mind-wave)
+            ;; (require 'config-mind-wave)
             (after! config-lsp-bridge (require 'config-treesit))
-            (after! (or (featurep 'org) (require 'ob-async)))
+            ;; (after! (or (featurep 'org) (require 'ob-async)))
             (require 'config-jinx)
             ))
 
@@ -107,3 +116,84 @@
 ;;   (advice-remove 'risky-local-variable-p #'ignore)
 ;;   nil)
 ;; (advice--p (advice--symbol-function 'risky-local-variable-p))
+
+
+;;------------;;
+;; playground ;;
+;;------------;;
+
+;; wrap +lookup/definition as xref backend
+;; TODO: function in lookup 是不是已经可以直接做 xfre-backend 了？
+(defun xfre-doom-lookup-definition (identifier)
+  (interactive)
+  (let ((file nil) (line nil) (column nil))
+    (save-window-excursion
+      (+lookup/definition identifier)
+      (setq file (buffer-file-name)
+            line (line-number-at-pos)
+            column (current-column)))
+    (list (xref-make identifier (xref-make-file-location file line column)))))
+(defun doom-lookup-xref-backend () 'doom-lookup-xref-backend)
+(cl-defmethod xref-backend-definitions ((_backend (eql doom-lookup-xref-backend)) symbol)
+  (xfre-doom-lookup-definition symbol))
+;; 不要加入 functions 因为 +lookup 调用 xref-backend
+;; x (add-hook 'xref-backend-functions #'doom-lookup-xref-backend)
+
+;; 源码阅读工具 command: citre-peek
+(use-package citre
+  :defer t
+  :init
+  ;; This is needed in `:init' block for lazy load to work.
+  (require 'citre-config)
+  :config
+  ;; map 一些 evil 的快捷方式
+  (defun ++citre-peek-scroll-down ()
+    "Scroll to the next line in a peek window."
+    (interactive)
+    (citre-peek--error-if-not-peeking)
+    (citre-peek--line-forward 7))
+
+  (defun ++citre-peek-scroll-up ()
+    "Scroll to the previous line in a peek window."
+    (interactive)
+    (citre-peek--error-if-not-peeking)
+    (citre-peek--line-forward -7))
+  ;; fix evil keymap 无效
+  (advice-add 'citre-peek :after #'evil-force-normal-state)
+  (advice-add 'citre-peek-jump :after #'evil-force-normal-state)
+  (dolist (state '(motion normal)) ;; expcept emacs state insert
+    (evil-define-key state citre-peek-keymap (kbd "h") #'citre-peek-chain-backward)
+    (evil-define-key state citre-peek-keymap (kbd "l") #'citre-peek-chain-forward)
+    (evil-define-key state citre-peek-keymap (kbd "j") #'citre-peek-next-line)
+    (evil-define-key state citre-peek-keymap (kbd "k") #'citre-peek-prev-line)
+    (evil-define-key state citre-peek-keymap (kbd "J") #'citre-peek-jump)
+    (evil-define-key state citre-peek-keymap (kbd "d") #'citre-peek-through)
+    (evil-define-key state citre-peek-keymap (kbd "D") #'citre-peek-through-reference)
+    (evil-define-key state citre-peek-keymap (kbd "p") #'citre-peek-prev-branch)
+    (evil-define-key state citre-peek-keymap (kbd "n") #'citre-peek-next-branch)
+    (evil-define-key state citre-peek-keymap (kbd "C-d") #'++citre-peek-scroll-down)
+    (evil-define-key state citre-peek-keymap (kbd "C-u") #'++citre-peek-scroll-up))
+  (map! :nm "g'" #'citre-peek)
+  ;; set doom-lookup as citre last backend
+  (defvar citre-doom-lookup-backend
+    (citre-xref-backend-to-citre-backend
+     'doom-lookup-xref-backend (lambda () t)
+     :symbol-atpt-fn #'doom-thing-at-point-or-region))
+  (citre-register-backend 'doom-lookup citre-doom-lookup-backend)
+  (add-to-list 'citre-find-definition-backends 'doom-lookup t))
+
+(defun ++switch-flycheck-list-errors ()
+  (interactive)
+  (flycheck-list-errors)
+  (pop-to-buffer "*Flycheck errors*"))
+
+;; ;; FIX: citre peek ui 和 flycheck error 都使用 postframe 时存在冲突
+;; (defun posframe-poshandler-point-top-left-corner-up (info)
+;;   "A posframe poshandler which position posframe at point's top left corner.
+;; This poshandler will let posframe move one line up from the current line."
+;;   (cons (car (window-inside-pixel-edges))
+;;         (- (cdr (posframe-poshandler-point-top-left-corner info))
+;;            (frame-char-height))))
+;; (use-package flycheck
+;;   :init
+;;   (setq flycheck-posframe-position 'point-top-left-corner-up))

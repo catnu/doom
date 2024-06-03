@@ -43,3 +43,6 @@
 [submodule "translate-shell"]
 	path = lib/translate-shell
 	url = git@github.com:xuchunyang/translate-shell.el.git
+[submodule "leetcode-cn"]
+	path = lib/leetcode-cn
+	url = git@github.com:evisx/leetcode-cn.el.git

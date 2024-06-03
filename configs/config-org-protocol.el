@@ -26,6 +26,28 @@
       (user-error "file not exist"))
     nil))
 
+(defun ++org-protocol/view-source-code (fname)
+  (let* ((splitparts (org-protocol-parse-parameters fname nil '(:location :filepath :region :pos)))
+         ;; (location (++org-protocol/vault-path (plist-get splitparts :location)))
+         (location ++utils/source-code-dir)
+         (filepath (expand-file-name (string-replace
+                                      ":/" "/" (org-protocol-sanitize-uri (plist-get splitparts :filepath)))
+                                     location))
+         (region (plist-get splitparts :region))
+         (pos (plist-get splitparts :pos)))
+    (if (file-exists-p filepath)
+        (progn
+          (++utils/+workspace-new-or-switch-to "view-source-code")
+          (find-file (expand-file-name filepath))
+          (if region
+              (let* ((split (split-string region ":"))
+                     (begin (string-to-number (car split)))
+                     (end (+ begin (string-to-number (cadr split)))))
+                (evil-visual-char begin end))
+            (goto-char pos)))
+          (user-error "file not exist"))
+      nil))
+
 ;; org pop
 (defvar ++org-pop/frame nil)
 
@@ -74,6 +96,10 @@ end tell")
                '("view-code-space"
                  :protocol "view-code-space"
                  :function ++org-protocol/view-code-space))
+  (add-to-list 'org-protocol-protocol-alist
+               '("view-source-code"
+                 :protocol "view-source-code"
+                 :function ++org-protocol/view-source-code))
   (add-to-list 'org-protocol-protocol-alist
                '("pop-focus"
                  :protocol "pop-focus"

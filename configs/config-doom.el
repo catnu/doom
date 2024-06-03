@@ -1,15 +1,17 @@
 ;;; config/config-doom.el -*- lexical-binding: t; -*-
 
-(defvar required-fonts '("LXGW WenKai Mono"
-                         "Mononoki Nerd Font Mono"
-                         "JetBrains Mono"
-                         "Overpass"
-                         "JuliaMono"
-                         "IBM Plex Mono"
-                         "Fira Code"      ; for ligatures
-                         ;; "Merriweather"
-                         ;; "Alegreya"
-                         ))
+;; 我常用字体
+(defvar required-fonts
+  '("LXGW WenKai Mono"
+    "Mononoki Nerd Font Mono"
+    "JetBrains Mono"
+    "Overpass"
+    "JuliaMono"
+    "IBM Plex Mono"
+    "Fira Code"      ; for ligatures
+    ;; "Merriweather"
+    ;; "Alegreya"
+    ))
 
 (let ((font-chinese "LXGW WenKai Mono"))
   ;; font

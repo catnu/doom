@@ -95,5 +95,19 @@ FILE must be relative to the top directory of the repository."
                            file file)))
   (map! :map code-review-mode-map :n "e" #'code-review-ediff-compare-file-at-point))
 
+
+(with-eval-after-load 'magit
+;; Protect against accident pushes to upstream
+  (defun query-magit-push-upstream (args)
+    (when-let ((branch (magit-get-current-branch)))
+      (when (member branch '("master" "main" "develop"))
+        (unless (yes-or-no-p (format "[warning] Really want push \"%s\" branch to \"%s\"? "
+                                     branch
+                                     (magit-get "branch" branch "remote")))
+          (user-error "Pushed aborted")))))
+
+  (advice-add 'magit-push-current-to-upstream :before #'query-magit-push-upstream)
+  (advice-add 'magit-push-current-to-pushremote :before #'query-magit-push-upstream))
+
 (message "[config] Apply config-git")
 (provide 'config-git)

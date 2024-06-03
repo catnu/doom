@@ -2,15 +2,18 @@
 
 (defvar ++lsp-bridge/follow-hooks
   '(;; c/c++ go rust python ruby
-    c-mode-hook
-    c++-mode-hook
-    go-mode-hook
-    python-mode-hook
+    c-ts-mode-hook
+    c++-ts-mode-hook
+    go-ts-mode-hook
+    python-ts-mode-hook
     sh-mode-hook
     emacs-lisp-mode-hook
     ;; org-mode-hook
-    ruby-mode-hook
+    ruby-ts-mode-hook
     ;; vue-mode-hook
+    ;; rjsx-mode-hook
+    js-ts-mode-hook
+    typescript-mode-hook
     rjsx-mode-hook
     ))
 
@@ -84,6 +87,7 @@
 ;;   (advice-add #'rtags-imenu :filter-return #'rtags-imenu-filter-output))
 
 (use-package! lsp-bridge
+  :after evil
   :commands lsp-bridge-mode
   :init
   ;; can't find enough prefix key
@@ -91,7 +95,8 @@
   ;; (setq acm-quick-access-modifier 'super)
   ;; (setq acm-quick-access-keys '("j" "l" "f" "s" "." "g" "d" "b" "x" ","))
   (setq acm-enable-tabnine nil)
-  (setq acm-enable-yas nil)
+  (setq acm-enable-yas t)
+  (setq acm-enable-tempel t)
   (setq acm-enable-preview t)
 
   ;;(setq acm-candidate-match-function 'orderless-flex)
@@ -105,16 +110,31 @@
   (setq lsp-bridge-python-ruff-lsp-server "pyright-background-analysis_ruff")
   (setq lsp-bridge-enable-hover-diagnostic t)
 
-  ;; (setq acm-enable-codeium t)
+  (setq lsp-bridge-enable-log nil)
+  (setq acm-enable-copilot t)
+  (setq acm-enable-codeium nil)
+  ;; 测试
+  (setq acm-backend-copilot-network-proxy '(:host "127.0.0.1", :port 8877))
   ;; (setq lsp-bridge-org-babel-lang-list nil)
   ;; (setq lsp-bridge-enable-org-babel t)
 
   :config
   (add-to-list 'evil-emacs-state-modes 'lsp-bridge-ref-mode)
 
+
   ;; (add-hook 'lsp-bridge-mode-hook
   ;;           #'(lambda ()
   ;;               (delete `(lsp-bridge-mode (" [" lsp-bridge--mode-line-format "] ")) mode-line-misc-info)))
+  (setq acm-completion-backend-merge-order '("copilot-candidates"
+
+                                             "mode-first-part-candidates"
+                                             "template-first-part-candidates"
+                                             "tabnine-candidates"
+                                             ;; "copilot-candidates"
+                                             "codeium-candidates"
+                                             "template-second-part-candidates"
+                                             "mode-second-part-candidates"))
+
 
   (remove-hook 'python-mode-local-vars-hook #'lsp!) ;; disable lsp
   (remove-hook 'python-mode-local-vars-hook #'+python-init-anaconda-mode-maybe-h)
@@ -152,6 +172,21 @@
                             (when (equal (buffer-name (window-buffer window)) "*lsp-bridge*")
                               (setq lsp-bridge-running-window window)))))
 
+  ;; auto login copilot
+  (setq lsp-bridge-copilot-inited nil)
+  (add-hook 'lsp-bridge-mode-hook
+            #'(lambda ()
+                "login copilot if didn't"
+                (when (and acm-enable-copilot (not lsp-bridge-copilot-inited))
+                  (run-with-timer ;; give lsp-bridge some time to startup
+                   3
+                   nil #'(lambda ()
+                           ;; ensuer copilot login
+                           (message "auto login copilot")
+                           (call-interactively #'lsp-bridge-copilot-login)
+                           (run-with-timer 3 nil #'lsp-bridge-copilot-status)))
+                  (setq lsp-bridge-copilot-inited t))))
+
   ;; (after! org
   ;;   (advice-add #'+org/return
   ;;               :before #'(lambda ()
@@ -162,11 +197,13 @@
   ;;  (:leader
   ;;   :desc "workspace symbol"
   ;;   :n "s n" #'lsp-bridge-workspace-list-symbols))
+  ;;
   )
 
 (use-package! acm
   :after lsp-bridge
   :config
+  (setq acm-menu-length 18)
   ;; bindings
   (define-key acm-mode-map (kbd "TAB") 'acm-select-next)
   (define-key acm-mode-map (kbd "S-TAB") 'acm-select-prev)
@@ -214,6 +251,11 @@
   ;; Enable indentation+completion using the TAB key.
   ;; `completion-at-point' is often bound to M-TAB.
   (setq tab-always-indent 'complete))
+
+(use-package! tempel
+  :config
+  (setq tempel-path (expand-file-name "snippets/templates/mixin.eld" doom-user-dir)))
+(use-package! tempel-collection :after tempel)
 
 ;;;mind-wave
 

@@ -51,6 +51,8 @@
 
 ;; for epkg borg
 ;; (package! closql)
+;; for consult vertico
+(package! pinyinlib)
 
 ;; for config-lookup
 (package! dash-at-point)
@@ -109,3 +111,19 @@
 (package! graphql)
 (package! aio)
 (package! log4e)
+
+(package! go-playground)
+(package! rust-playground)
+(package! gotest)
+
+(package! tempel)
+(package! tempel-collection)
+
+;; for utils
+(package! difftastic)
+(package! string-inflection)
+
+;; codeium
+;; (package! codeium :recipe (:host github :repo "Exafunction/codeium.el"))
+
+(package! citre)

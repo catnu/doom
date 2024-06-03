@@ -37,53 +37,35 @@
           (toml . ("https://github.com/tree-sitter/tree-sitter-toml"))
           (zig . ("https://github.com/GrayJack/tree-sitter-zig"))))
 
-  (defun ++config/ts-mode (code-mode ts-mode)
-    (or (featurep ts-mode)
-        (let ((code-mode-map (intern (concat (symbol-name code-mode) "-map")))
-              (ts-mode-map (intern (concat (symbol-name ts-mode) "-map"))))
-          ;; (add-to-list 'jinx-camel-modes ts-mode)
-          (eval `(set-keymap-parent ,ts-mode-map ,code-mode-map)))))
-
-  (add-hook 'c-mode-hook #'c-ts-mode 'append)
-  (after! c-ts-mode (++config/ts-mode 'c-mode 'c-ts-mode))
-
-  (add-hook 'c++-mode-hook #'c++-ts-mode 'append)
-  (after! c-ts-mode (++config/ts-mode 'c++-mode 'c++-ts-mode))
-
-  (use-package! go-ts-mode
+  (when (treesit-available-p)
+    (use-package! go-ts-mode
       :config
-    (setq go-ts-mode-indent-offset 4))
+      (setq go-ts-mode-indent-offset 4))
 
-  (add-hook 'go-mode-hook #'go-ts-mode 'append)
-  (after! go-ts-mode
-    (++config/ts-mode 'go-mode 'go-ts-mode))
+    (setq major-mode-remap-alist
+          '((c-mode          . c-ts-mode)
+            (c++-mode        . c++-ts-mode)
+            (cmake-mode      . cmake-ts-mode)
+            (go-mode         . go-ts-mode)
+            ;; (gomod-mode      . gomod-ts-mode)
+            (java-mode       . java-ts-mode)
+            (python-mode     . python-ts-mode)
+            (ruby-mode       . ruby-ts-mode)
+            (sh-mode         . bash-ts-mode)
+            (csharp-mode     . csharp-ts-mode)
+            (conf-toml-mode  . toml-ts-mode)
+            (css-mode        . css-ts-mode)
+            (js-mode         . js-ts-mode)
+            (javascript-mode . typescript-ts-mode)
+            (js-json-mode    . json-ts-mode)
+            )))
 
-  (add-hook 'ruby-mode-hook #'ruby-ts-mode 'append)
-  (after! ruby-ts-mode (++config/ts-mode 'ruby-mode 'ruby-ts-mode))
-
-  (add-hook 'cmake-mode-hook #'cmake-ts-mode 'append)
-  (after! cmake-ts-mode (++config/ts-mode 'cmake-mode 'cmake-ts-mode))
-
-  (add-hook 'conf-toml-hook #'toml-ts-mode 'append)
-  (after! toml-ts-mode (++config/ts-mode 'conf-toml 'toml-ts-mode))
-
-  (add-hook 'css-mode-hook #'css-ts-mode 'append)
-  (after! css-ts-mode (++config/ts-mode 'css-mode 'css-ts-mode))
-
-  (add-hook 'js-mode-hook #'js-ts-mode 'append)
-  (after! js-ts-mode (++config/ts-mode 'js-mode 'js-ts-mode))
-
-  (add-hook 'js-json-hook #'json-ts-mode 'append)
-  (after! json-ts-mode (++config/ts-mode 'js-json 'json-ts-mode))
-
-  (add-hook 'python-mode-hook #'python-ts-mode 'append)
-  (after! python-ts-mode (++config/ts-mode 'python-mode 'python-ts-mode))
-
-  (add-hook 'sh-mode-hook #'bash-ts-mode 'append)
-  (after! bash-ts-mode (++config/ts-mode 'sh-mode 'bash-ts-mode))
-
-  (add-hook 'typescript-mode-hook #'typescript-ts-mode 'append)
-  (after! typescript-ts-mode (++config/ts-mode 'typescript-mode 'typescript-ts-mode))
+  ;; (defun ++config/ts-mode (code-mode ts-mode)
+  ;;   (or (featurep ts-mode)
+  ;;       (let ((code-mode-map (intern (concat (symbol-name code-mode) "-map")))
+  ;;             (ts-mode-map (intern (concat (symbol-name ts-mode) "-map"))))
+  ;;         (unless (eq (keymap-parent ts-mode-map) code-mode-map)
+  ;;           (set-keymap-parent ts-mode-map code-mode-map)))))
 
   (add-hook 'emacs-lisp-mode-hook #'(lambda () (treesit-parser-create 'elisp)) 'append))
 

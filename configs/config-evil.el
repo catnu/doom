@@ -4,12 +4,14 @@
   :config
   ;; vim-like clipboard
   (setq x-select-enable-clipboard nil)
+  (global-set-key (kbd "M-c") nil)
   ;; restore mac system key bind
   ;; cmd-v
   (dolist (state '(emacs motion normal visual insert))
     (eval `(define-key ,(intern (format "evil-%s-state-map" state))
             (kbd "s-v") #'clipboard-yank)))
   (global-set-key (kbd "s-v") #'clipboard-yank)
+  (global-set-key [remap yank] #'consult-yank-from-kill-ring)
   ;; cmd-c
   (dolist (state '(emacs motion normal visual insert))
     (eval `(define-key ,(intern (format "evil-%s-state-map" state))
@@ -44,6 +46,11 @@
   (add-to-list 'embark-post-action-hooks '(++evil/embark-visual-select ++evil/visul-select-for-embark-act))
   ;; interactively function call method is different to normal function
   (define-key embark-general-map "v" #'++evil/embark-visual-select))
+
+;; Tell `evil` to treat `difftastic-mode` as an Emacs state mode.
+;; This means that `evil` will not impose its keybindings over `difftastic-mode-map`.
+(after! evil
+  (add-to-list 'evil-emacs-state-modes 'difftastic-mode))
 
 (message "[config] Apply config-evil")
 (provide 'config-evil)
